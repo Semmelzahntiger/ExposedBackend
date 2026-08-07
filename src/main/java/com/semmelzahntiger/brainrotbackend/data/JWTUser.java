@@ -1,4 +1,5 @@
 package com.semmelzahntiger.brainrotbackend.data;
 
-public record JWTUser() {
+public record JWTUser(String username) {
+
 }

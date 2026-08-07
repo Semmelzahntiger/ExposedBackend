@@ -27,6 +27,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.flywaydb:flyway-database-postgresql'
+    implementation 'com.auth0:java-jwt:4.6.0'
+    implementation 'io.github.cdimascio:dotenv-java:3.2.0'
+    implementation(platform("com.bucket4j:bucket4j:8.10.1"))
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'

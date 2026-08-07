@@ -1,6 +1,5 @@
-package com.semmelzahntiger.brainrotbackend.data;
+package com.semmelzahntiger.brainrotbackend.service;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 @Service

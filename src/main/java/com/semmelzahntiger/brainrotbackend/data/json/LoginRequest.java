@@ -1,7 +1,4 @@
-package com.semmelzahntiger.brainrotbackend.data;
-
-import lombok.Getter;
-import lombok.Setter;
+package com.semmelzahntiger.brainrotbackend.data.json;
 
 public record LoginRequest(String email, String password) {
 
