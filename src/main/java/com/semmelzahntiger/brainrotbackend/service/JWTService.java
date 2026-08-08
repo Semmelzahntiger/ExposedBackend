@@ -4,12 +4,12 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import org.hibernate.cfg.Environment;
+import com.auth0.jwt.interfaces.JWTVerifier;
+import com.semmelzahntiger.brainrotbackend.data.AppUser;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -19,23 +19,30 @@ public class JWTService {
         environmentService = envService;
     }
 
-    public String createJWTToken(String username) {
+    public String createJWTToken(AppUser appUser) {
         return JWT.create()
-                .withSubject(username)
-                .withClaim("username", username)
+                .withSubject(String.valueOf(appUser.getUserId()))
+                .withClaim("username", appUser.getUsername())
                 .withIssuedAt(Instant.now())
                 .withExpiresAt(Instant.now().plus(15, ChronoUnit.MINUTES))
                 .sign(Algorithm.HMAC256(environmentService.getSecret()));
     }
 
-    public Optional<String> decodeUsernameFromJWT(String token){
+    public Optional<DecodedJWT> getDecodedJWT(String token) {
         try {
-            DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(environmentService.getSecret()))
-                    .build().verify(token);
-        } catch (JWTVerificationException e) {
+            Algorithm algorithm = Algorithm.HMAC256(environmentService.getSecret());
+            JWTVerifier verifier = JWT.require(algorithm).build();
+            DecodedJWT jwt = verifier.verify(token);
+            return Optional.of(jwt);
+        }
+        catch (JWTVerificationException e) {
             return Optional.empty();
         }
-
     }
+    public boolean validJWTToken(String token) {
+        return getDecodedJWT(token).isPresent();
+    }
+
+
 
 }
