@@ -2,10 +2,12 @@ package com.semmelzahntiger.brainrotbackend.service;
 
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class RefreshTokenService {
 
-    public String getNewRefreshToken() {
+    public String getNewRefreshToken(UUID userUUID) {
 
     }
 

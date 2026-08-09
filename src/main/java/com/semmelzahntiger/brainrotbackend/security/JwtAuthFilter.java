@@ -47,7 +47,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String[] authorities = jwt.getClaim("authorities").asArray(String.class);
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         for (String authority : authorities) {
-            grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + authority));
+            grantedAuthorities.add(new SimpleGrantedAuthority(authority));
         }
         UserPrincipal userPrincipal = new UserPrincipal(userUUID, userMail, username, authorities);
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userPrincipal, null, grantedAuthorities));

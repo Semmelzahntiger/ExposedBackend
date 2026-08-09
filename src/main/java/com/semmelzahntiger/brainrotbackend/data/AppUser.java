@@ -15,12 +15,13 @@ public class AppUser {
     private String password;
     @Getter
     private String email;
-    private List<String> authorities = new ArrayList<>();
+    private final List<String> authorities = new ArrayList<>();
     public AppUser(UUID userId, String username, String email, String password) {
         this.userId = userId;
         this.username = username;
         this.password = password;
         this.email = email;
+        authorities.add("ROLE_USER");
     }
     public void addAuthority(String authority) {
         authorities.add(authority);
