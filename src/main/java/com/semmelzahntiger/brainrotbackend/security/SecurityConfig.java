@@ -3,6 +3,7 @@ package com.semmelzahntiger.brainrotbackend.security;
 
 import com.semmelzahntiger.brainrotbackend.service.EnvironmentService;
 import com.semmelzahntiger.brainrotbackend.service.JWTService;
+import com.semmelzahntiger.brainrotbackend.service.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;

@@ -22,7 +22,9 @@ public class JWTService {
     public String createJWTToken(AppUser appUser) {
         return JWT.create()
                 .withSubject(String.valueOf(appUser.getUserId()))
+                .withClaim("email", appUser.getEmail())
                 .withClaim("username", appUser.getUsername())
+                .withArrayClaim("authorities", appUser.getAuthorities().toArray(new String[0]))
                 .withIssuedAt(Instant.now())
                 .withExpiresAt(Instant.now().plus(15, ChronoUnit.MINUTES))
                 .sign(Algorithm.HMAC256(environmentService.getSecret()));
