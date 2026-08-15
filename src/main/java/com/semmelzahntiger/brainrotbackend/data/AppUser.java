@@ -38,4 +38,13 @@ public class AppUser {
     public void changeEmail(String email) {
         this.email = email;
     }
+
+    public static AppUser fromUserEntity(UserEntity userEntity) {
+        return new AppUser(
+                userEntity.getUserId(),
+                userEntity.getUsername(),
+                userEntity.getEmail(),
+                userEntity.getPassword()
+        );
+    }
 }

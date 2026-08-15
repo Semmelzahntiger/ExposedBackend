@@ -12,11 +12,11 @@ import java.util.UUID;
 
 // Testing Version
 @Service
-public class UserRepository {
+public class InMemoryRepository {
     public final Map<UUID, AppUser> users = new HashMap<>();
 
     private final PasswordService passwordService;
-    public UserRepository(PasswordService passwordService) {
+    public InMemoryRepository(PasswordService passwordService) {
         this.passwordService = passwordService;
     }
 
