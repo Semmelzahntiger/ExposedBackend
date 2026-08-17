@@ -44,6 +44,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(
                         new UsernamePasswordAuthenticationToken(userPrincipal, null, grantedAuthorities));
             }
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
         }
         filterChain.doFilter(request, response);
     }

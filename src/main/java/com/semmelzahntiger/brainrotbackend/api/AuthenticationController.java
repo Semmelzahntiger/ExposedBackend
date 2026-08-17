@@ -3,10 +3,8 @@ package com.semmelzahntiger.brainrotbackend.api;
 import com.semmelzahntiger.brainrotbackend.data.AppUser;
 import com.semmelzahntiger.brainrotbackend.data.UserEntity;
 import com.semmelzahntiger.brainrotbackend.data.UserRepository;
-import com.semmelzahntiger.brainrotbackend.data.json.TestResponse;
 import com.semmelzahntiger.brainrotbackend.service.PasswordService;
 import com.semmelzahntiger.brainrotbackend.service.RefreshTokenService;
-import com.semmelzahntiger.brainrotbackend.service.InMemoryRepository;
 import com.semmelzahntiger.brainrotbackend.data.json.LoginRequest;
 import com.semmelzahntiger.brainrotbackend.data.json.LoginResponse;
 import com.semmelzahntiger.brainrotbackend.data.json.RegistrationRequest;
@@ -15,30 +13,26 @@ import com.semmelzahntiger.brainrotbackend.service.JWTService;
 import com.semmelzahntiger.brainrotbackend.util.ValidatorUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
-@RequestMapping("/auth")
-public class Authentication {
+@RequestMapping("api/auth")
+public class AuthenticationController {
 
     private final UserRepository userRepository;
     private final JWTService jwtService;
     private final PasswordService passwordService;
     private final RefreshTokenService refreshTokenService;
 
-    public Authentication(InMemoryRepository dataAccess,
-                          UserRepository userRepository,
-                          JWTService jwtService,
-                          PasswordService passwordService,
-                          RefreshTokenService refreshTokenService) {
+    public AuthenticationController(UserRepository userRepository,
+                                    JWTService jwtService,
+                                    PasswordService passwordService,
+                                    RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
         this.passwordService = passwordService;
