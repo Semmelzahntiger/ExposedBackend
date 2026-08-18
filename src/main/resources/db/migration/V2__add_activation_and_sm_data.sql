@@ -1,0 +1,1 @@
+ALTER TABLE app.users ADD COLUMN activated boolean, ADD COLUMN tiktok_data jsonb, ADD COLUMN instagram_data jsonb

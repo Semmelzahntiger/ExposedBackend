@@ -1,4 +1,4 @@
-package com.semmelzahntiger.brainrotbackend.data.json;
+package com.semmelzahntiger.brainrotbackend.data.response;
 
 public record LoginRequest(String email, String password) {
 

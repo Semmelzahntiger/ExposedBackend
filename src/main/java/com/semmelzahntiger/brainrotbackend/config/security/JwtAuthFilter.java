@@ -1,4 +1,4 @@
-package com.semmelzahntiger.brainrotbackend.security;
+package com.semmelzahntiger.brainrotbackend.config.security;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.semmelzahntiger.brainrotbackend.data.UserPrincipal;
