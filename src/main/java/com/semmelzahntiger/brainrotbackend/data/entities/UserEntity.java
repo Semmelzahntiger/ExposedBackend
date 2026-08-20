@@ -1,4 +1,4 @@
-package com.semmelzahntiger.brainrotbackend.data;
+package com.semmelzahntiger.brainrotbackend.data.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

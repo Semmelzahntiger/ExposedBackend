@@ -1,14 +1,14 @@
 package com.semmelzahntiger.brainrotbackend.api;
 
 import com.semmelzahntiger.brainrotbackend.data.AppUser;
-import com.semmelzahntiger.brainrotbackend.data.UserEntity;
+import com.semmelzahntiger.brainrotbackend.data.entities.UserEntity;
 import com.semmelzahntiger.brainrotbackend.data.UserRepository;
 import com.semmelzahntiger.brainrotbackend.service.PasswordService;
 import com.semmelzahntiger.brainrotbackend.service.RefreshTokenService;
-import com.semmelzahntiger.brainrotbackend.data.response.LoginRequest;
-import com.semmelzahntiger.brainrotbackend.data.response.LoginResponse;
-import com.semmelzahntiger.brainrotbackend.data.response.RegistrationRequest;
-import com.semmelzahntiger.brainrotbackend.data.response.RegistrationResponse;
+import com.semmelzahntiger.brainrotbackend.data.json.requests.LoginRequest;
+import com.semmelzahntiger.brainrotbackend.data.json.response.LoginResponse;
+import com.semmelzahntiger.brainrotbackend.data.json.requests.RegistrationRequest;
+import com.semmelzahntiger.brainrotbackend.data.json.response.RegistrationResponse;
 import com.semmelzahntiger.brainrotbackend.service.JWTService;
 import com.semmelzahntiger.brainrotbackend.util.ValidatorUtil;
 import jakarta.servlet.http.HttpServletResponse;

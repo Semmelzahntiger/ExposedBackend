@@ -1,5 +1,6 @@
 package com.semmelzahntiger.brainrotbackend.data;
 
+import com.semmelzahntiger.brainrotbackend.data.entities.UserEntity;
 import lombok.Getter;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.semmelzahntiger.brainrotbackend.data.response;
+package com.semmelzahntiger.brainrotbackend.data.json.response;
 
 import jakarta.annotation.Nullable;
 

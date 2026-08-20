@@ -24,6 +24,7 @@ public class UploadController {
         if(!type.equals("tiktok") && !type.equals("instagram")) {
             return ResponseEntity.badRequest().body("Unsupported file type declared");
         }
+
         return ResponseEntity.ok().build();
     }
 

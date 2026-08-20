@@ -1,6 +1,6 @@
 package com.semmelzahntiger.brainrotbackend.api;
 
-import com.semmelzahntiger.brainrotbackend.data.response.UnauthorizedResponse;
+import com.semmelzahntiger.brainrotbackend.data.json.response.UnauthorizedResponse;
 import com.semmelzahntiger.brainrotbackend.util.exceptions.DeclaredDataFormatException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;

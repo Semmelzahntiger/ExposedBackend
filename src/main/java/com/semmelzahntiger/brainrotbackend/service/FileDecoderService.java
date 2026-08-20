@@ -1,22 +1,28 @@
 package com.semmelzahntiger.brainrotbackend.service;
 
+import com.semmelzahntiger.brainrotbackend.util.JsonUtil;
+import com.semmelzahntiger.brainrotbackend.util.MiscUtil;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-@Service
+@Component
 public class FileDecoderService {
-    private static final  ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+
     private static final long MAX_ENTRY_SIZE = 100L * 1024 * 1024;
     private static final long MAX_TOTAL_SIZE = 200L * 1024 * 1024;
     private static final int MAX_ENTRIES = 100;
@@ -75,14 +81,13 @@ public class FileDecoderService {
         }
         return result;
     }
+
+
     private String getCleanEntryName(String entryName) {
         String normalizedEntryName = Paths.get(entryName).normalize().toString();
         if(normalizedEntryName.startsWith("../") || normalizedEntryName.contains(".." + File.separator)) {
             throw new SecurityException("Zip Entry contains malicious structure" + entryName);
         }
         return normalizedEntryName;
-    }
-    public JsonNode readByteArrayToJson(byte[] bytes) {
-        return OBJECT_MAPPER.readTree(bytes);
     }
 }
