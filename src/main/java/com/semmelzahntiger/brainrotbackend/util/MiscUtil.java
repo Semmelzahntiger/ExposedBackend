@@ -1,13 +1,15 @@
 package com.semmelzahntiger.brainrotbackend.util;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
 public class MiscUtil {
 
-    public static Date readDateFromUnixTimestamp(long timestamp) {
+    public static LocalDate readDateFromUnixTimestamp(long timestamp) {
         Instant instant = Instant.ofEpochSecond(timestamp);
-        return Date.from(instant);
+        return instant.atZone(ZoneId.systemDefault()).toLocalDate();
     }
 }

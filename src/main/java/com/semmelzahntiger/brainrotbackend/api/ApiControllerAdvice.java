@@ -1,7 +1,7 @@
 package com.semmelzahntiger.brainrotbackend.api;
 
 import com.semmelzahntiger.brainrotbackend.data.json.response.UnauthorizedResponse;
-import com.semmelzahntiger.brainrotbackend.util.exceptions.DeclaredDataFormatException;
+import com.semmelzahntiger.brainrotbackend.util.exceptions.MalformedDataStructureException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,8 +25,8 @@ public class ApiControllerAdvice {
     public ResponseEntity<?> handleSecurityException(SecurityException ex) {
         return ResponseEntity.status(HttpServletResponse.SC_BAD_REQUEST).build();
     }
-    @ExceptionHandler(DeclaredDataFormatException.class)
-    public ResponseEntity<?> handleDeclaredDataFormatException(DeclaredDataFormatException ex) {
+    @ExceptionHandler(MalformedDataStructureException.class)
+    public ResponseEntity<?> handleMalformedDataStructureException(MalformedDataStructureException ex) {
         return ResponseEntity.status(HttpServletResponse.SC_BAD_REQUEST).build();
     }
 }

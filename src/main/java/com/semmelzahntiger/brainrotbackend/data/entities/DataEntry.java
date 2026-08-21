@@ -1,0 +1,51 @@
+package com.semmelzahntiger.brainrotbackend.data.entities;
+
+import com.semmelzahntiger.brainrotbackend.service.SocialMediaResource;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDate;
+import java.util.UUID;
+
+@Entity
+@Table(name = "entries")
+@Getter
+@Setter
+public class DataEntry {
+
+    public static DataEntry fromSocialMediaResource(UUID userId, SocialMediaResource resource) {
+        DataEntry entry = new DataEntry();
+        entry.userid = userId;
+        entry.dataType = resource.getResourceType().getName();
+        entry.platform = resource.getPlatform().toString();
+        entry.date = resource.getTimestamp();
+        entry.value = resource.getResource();
+        return entry;
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "entry_id", nullable = false)
+    private long id;
+
+    @Column(name = "user_id", nullable = false)
+    private UUID userid;
+
+    @Column(name = "platform", nullable = false)
+    private String platform;
+
+    @Column(name = "data_type",nullable = false)
+    private String dataType;
+
+    @Column(name = "timestamp",nullable = false)
+    private LocalDate date;
+
+    @Column(name = "ref", nullable = false)
+    private String value;
+}

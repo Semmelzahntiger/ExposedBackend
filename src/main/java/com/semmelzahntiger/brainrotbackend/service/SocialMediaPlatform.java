@@ -3,7 +3,7 @@ package com.semmelzahntiger.brainrotbackend.service;
 import lombok.Getter;
 
 @Getter
-enum SocialMediaPlatform {
+public enum SocialMediaPlatform {
     INSTAGRAM("instagram"),
     TIKTOK("tiktok");
     private final String name;
