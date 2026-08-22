@@ -1,5 +1,7 @@
 package com.semmelzahntiger.brainrotbackend.service;
 
+import org.apache.tomcat.util.http.fileupload.impl.FileCountLimitExceededException;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
@@ -14,10 +16,11 @@ import java.util.zip.ZipInputStream;
 @Component
 public class FileDecoderService {
 
-
+    private static final long MAX_ENTRY_MEGABYTES = 100L;
+    private static final long MAX_TOTAL_MEGABYTES = 200L;
     private static final long MAX_ENTRY_SIZE = 100L * 1024 * 1024;
-    private static final long MAX_TOTAL_SIZE = 200L * 1024 * 1024;
-    private static final int MAX_ENTRIES = 100;
+    private static final long MAX_TOTAL_SIZE = MAX_TOTAL_MEGABYTES * 1024 * 1024;
+    private static final int MAX_ENTRIES = 300;
     private static final int BUFFER_SIZE = 8192;
 
     /**
@@ -38,7 +41,7 @@ public class FileDecoderService {
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 entryCount++;
                 if(entryCount > MAX_ENTRIES) {
-                    throw new SecurityException("Too many entries");
+                    throw new FileCountLimitExceededException("Too many entries", MAX_ENTRIES);
                 }
                 if(zipEntry.isDirectory()) {
                     zipInputStream.closeEntry();
@@ -47,6 +50,11 @@ public class FileDecoderService {
                 // Check entry name for malicious structure
                 String clearedName = getCleanEntryName(zipEntry.getName());
 
+                // Ignore non JSON files
+                if(!clearedName.endsWith(".json")) {
+                    zipInputStream.closeEntry();
+                    continue;
+                }
                 // Output Stream for current Entry
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 byte[] buffer = new byte[BUFFER_SIZE];
@@ -59,10 +67,10 @@ public class FileDecoderService {
                     totalUncompressedSize += length;
 
                     if(entryTotal > MAX_ENTRY_SIZE) {
-                        throw new SecurityException("Entry "+ clearedName + " too large");
+                        throw new FileSizeLimitExceededException("Individual Zip Entry too large. (Max " + MAX_ENTRY_MEGABYTES + " MB)", entryTotal, MAX_ENTRY_SIZE);
                     }
                     if(totalUncompressedSize > MAX_TOTAL_SIZE) {
-                        throw new SecurityException("Zip file too large");
+                        throw new FileSizeLimitExceededException("Zip file too large. (Max: " + MAX_TOTAL_MEGABYTES + " MB)", totalUncompressedSize, MAX_TOTAL_SIZE);
                     }
                     outputStream.write(buffer, 0, length);
                 }

@@ -6,6 +6,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.semmelzahntiger.brainrotbackend.data.AppUser;
+import com.semmelzahntiger.brainrotbackend.data.entities.UserEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -18,13 +19,23 @@ public class JWTService {
     public JWTService (EnvironmentService envService) {
         environmentService = envService;
     }
-
+    @Deprecated
     public String createJWTToken(AppUser appUser) {
         return JWT.create()
                 .withSubject(String.valueOf(appUser.getUserId()))
                 .withClaim("email", appUser.getEmail())
                 .withClaim("username", appUser.getUsername())
                 .withArrayClaim("authorities", appUser.getAuthorities().toArray(new String[0]))
+                .withIssuedAt(Instant.now())
+                .withExpiresAt(Instant.now().plus(15, ChronoUnit.MINUTES))
+                .sign(Algorithm.HMAC256(environmentService.getSecret()));
+    }
+    public String createJWTToken(UserEntity user) {
+        return JWT.create()
+                .withSubject(String.valueOf(user.getUserId()))
+                .withClaim("email", user.getEmail())
+                .withClaim("username", user.getUsername())
+                .withArrayClaim("authorities", user.getAuthorities().toArray(new String[0]))
                 .withIssuedAt(Instant.now())
                 .withExpiresAt(Instant.now().plus(15, ChronoUnit.MINUTES))
                 .sign(Algorithm.HMAC256(environmentService.getSecret()));

@@ -1,4 +1,4 @@
-package com.semmelzahntiger.brainrotbackend.data;
+package com.semmelzahntiger.brainrotbackend.data.repositories;
 
 import com.semmelzahntiger.brainrotbackend.data.entities.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

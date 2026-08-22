@@ -1,8 +1,12 @@
 package com.semmelzahntiger.brainrotbackend.api;
 
 import com.semmelzahntiger.brainrotbackend.data.AppUser;
+import com.semmelzahntiger.brainrotbackend.data.entities.RefreshTokenEntity;
 import com.semmelzahntiger.brainrotbackend.data.entities.UserEntity;
-import com.semmelzahntiger.brainrotbackend.data.UserRepository;
+import com.semmelzahntiger.brainrotbackend.data.repositories.RefreshTokenRepository;
+import com.semmelzahntiger.brainrotbackend.data.repositories.UserRepository;
+import com.semmelzahntiger.brainrotbackend.data.json.requests.RefreshRequest;
+import com.semmelzahntiger.brainrotbackend.data.json.requests.ValidationRequest;
 import com.semmelzahntiger.brainrotbackend.service.PasswordService;
 import com.semmelzahntiger.brainrotbackend.service.RefreshTokenService;
 import com.semmelzahntiger.brainrotbackend.data.json.requests.LoginRequest;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -25,15 +30,18 @@ import java.util.Optional;
 public class AuthenticationController {
 
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final JWTService jwtService;
     private final PasswordService passwordService;
     private final RefreshTokenService refreshTokenService;
 
     public AuthenticationController(UserRepository userRepository,
+                                    RefreshTokenRepository refreshTokenRepository,
                                     JWTService jwtService,
                                     PasswordService passwordService,
                                     RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
         this.jwtService = jwtService;
         this.passwordService = passwordService;
         this.refreshTokenService = refreshTokenService;
@@ -58,12 +66,16 @@ public class AuthenticationController {
         }
         AppUser appUser = AppUser.fromUserEntity(userEntity);
         String jwtToken = jwtService.createJWTToken(appUser);
-        String refreshToken = refreshTokenService.getNewRefreshToken(appUser.getUserId());
+
+        String refreshToken = refreshTokenService.getNewRefreshToken();
+        RefreshTokenEntity refreshTokenEntity = RefreshTokenEntity.getNewRefreshTokenEntity(userEntity, refreshToken);
+        refreshTokenRepository.save(refreshTokenEntity);
+
         return ResponseEntity.ok(new LoginResponse(true, jwtToken, refreshToken, null));
     }
 
     @PostMapping("/register")
-    public  ResponseEntity<RegistrationResponse> register(@RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<RegistrationResponse> register(@RequestBody RegistrationRequest registrationRequest) {
         String email = registrationRequest.email();
         if(!ValidatorUtil.validEmail(email)) {
             return ResponseEntity.status(HttpServletResponse.SC_BAD_REQUEST).body(new RegistrationResponse(false, null, null, "Email is invalid."));
@@ -96,10 +108,29 @@ public class AuthenticationController {
         AppUser appUser = AppUser.fromUserEntity(userEntity);
 
         String jwt = jwtService.createJWTToken(appUser);
-        String refresh = refreshTokenService.getNewRefreshToken(appUser.getUserId());
+        String refreshToken = refreshTokenService.getNewRefreshToken();
 
-        return ResponseEntity.ok().body(new RegistrationResponse(true, jwt, refresh, null));
+        RefreshTokenEntity refreshTokenEntity = RefreshTokenEntity.getNewRefreshTokenEntity(userEntity, refreshToken);
+        refreshTokenRepository.save(refreshTokenEntity);
+
+        return ResponseEntity.ok().body(new RegistrationResponse(true, jwt, refreshToken, null));
     }
 
-
+    @PostMapping("/verify")
+    public ResponseEntity<Map<String, String>> verify(@RequestBody ValidationRequest validationRequest) {
+        String token = validationRequest.token();
+        return jwtService.validJWTToken(token) ? ResponseEntity.ok().build() : ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build();
+    }
+    @PostMapping("/refresh-token")
+    public ResponseEntity<Map<String, String>> refresh(@RequestBody RefreshRequest refreshRequest) {
+        String refreshToken = refreshRequest.refreshToken();
+        Optional<RefreshTokenEntity> tokenOptional = refreshTokenService.getRefreshTokenEntity(refreshToken);
+        if(tokenOptional.isPresent()) {
+            RefreshTokenEntity refreshTokenEntity = tokenOptional.get();
+            UserEntity user = refreshTokenEntity.getOwnerEntity();
+            String jwt = jwtService.createJWTToken(user);
+            return ResponseEntity.ok().body(Map.of("token",jwt));
+        }
+        return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body(Map.of("message", "Refresh Token Invalid"));
+    }
 }

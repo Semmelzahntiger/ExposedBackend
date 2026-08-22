@@ -1,6 +1,7 @@
-package com.semmelzahntiger.brainrotbackend.data;
+package com.semmelzahntiger.brainrotbackend.data.repositories;
 
 import com.semmelzahntiger.brainrotbackend.data.entities.DataEntry;
+import com.semmelzahntiger.brainrotbackend.data.entities.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,8 +14,11 @@ import java.util.UUID;
 @Repository
 public interface DataEntryRepository extends JpaRepository<DataEntry, Long> {
 
-    void deleteByUserid(UUID user_id);
-    void deleteByUseridAndPlatform(UUID user_id, String platform);
+    void deleteByUserEntity(UserEntity user);
+    void deleteByUserEntity_UserId(UUID userId);
+    void deleteByUserEntityAndPlatform(UserEntity user_id, String platform);
+    void deleteByUserEntity_UserIdAndPlatform(UUID user_id, String platform);
+
     void deleteById(Long id);
 
     @Query(value = "SELECT * FROM entries WHERE user_id = :userId ORDER BY RANDOM() LIMIT :count",

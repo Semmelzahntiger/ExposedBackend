@@ -1,7 +1,7 @@
 package com.semmelzahntiger.brainrotbackend.service;
 
-import com.semmelzahntiger.brainrotbackend.data.DataEntryRepository;
-import com.semmelzahntiger.brainrotbackend.data.UserRepository;
+import com.semmelzahntiger.brainrotbackend.data.repositories.DataEntryRepository;
+import com.semmelzahntiger.brainrotbackend.data.repositories.UserRepository;
 import com.semmelzahntiger.brainrotbackend.data.entities.DataEntry;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class EntryService {
         if (!userExists) {
             return false;
         }
-        dataEntryRepository.deleteByUseridAndPlatform(userId, platformName);
+        dataEntryRepository.deleteByUserEntity_UserIdAndPlatform(userId, platformName);
         List<DataEntry> entries = socialMediaResources.stream()
                 .map(entry -> DataEntry.fromSocialMediaResource(userId, entry)).toList();
         dataEntryRepository.saveAll(entries);
@@ -38,7 +38,7 @@ public class EntryService {
         if (!userExists) {
             return false;
         }
-        dataEntryRepository.deleteByUserid(userId);
+        dataEntryRepository.deleteByUserEntity_UserId(userId);
         return true;
     }
 
