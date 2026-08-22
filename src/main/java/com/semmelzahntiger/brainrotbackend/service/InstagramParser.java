@@ -20,7 +20,7 @@ public class InstagramParser implements SocialMediaParser {
 
 
 
-    public List<SocialMediaResource> parseData(Map<String, byte[]> data) {
+    public List<SocialMediaResource> parseData(Map<String, byte[]> data) throws MalformedDataStructureException {
         List<SocialMediaResource> resources = new ArrayList<>();
         byte[] likedPosts = data.get(LIKED_POST_PATH);
         byte[] savedPosts = data.get(SAVED_POST_PATH);

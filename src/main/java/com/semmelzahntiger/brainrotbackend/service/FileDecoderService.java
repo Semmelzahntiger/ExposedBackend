@@ -26,7 +26,7 @@ public class FileDecoderService {
      * @return Map of all entries and their data
      * @throws IOException
      */
-    public Map<String, byte[]> extract(InputStream inputStream) throws IOException {
+    public Map<String, byte[]> extract(InputStream inputStream) throws IOException, SecurityException {
         Map<String, byte[]> result = new HashMap<>();
         long totalUncompressedSize = 0L;
         int entryCount = 0;

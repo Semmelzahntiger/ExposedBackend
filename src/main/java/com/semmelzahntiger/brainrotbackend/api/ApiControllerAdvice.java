@@ -14,8 +14,8 @@ import java.nio.file.AccessDeniedException;
 public class ApiControllerAdvice {
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<UnauthorizedResponse> handleUnauthorizedException(AccessDeniedException ex) {
-        return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body(new UnauthorizedResponse());
+    public ResponseEntity<?> handleUnauthorizedException(AccessDeniedException ex) {
+        return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Unauthorized");
     }
     @ExceptionHandler(IOException.class)
     public ResponseEntity<?> handleIOException(IOException ex) {
@@ -23,10 +23,10 @@ public class ApiControllerAdvice {
     }
     @ExceptionHandler(SecurityException.class)
     public ResponseEntity<?> handleSecurityException(SecurityException ex) {
-        return ResponseEntity.status(HttpServletResponse.SC_BAD_REQUEST).build();
+        return ResponseEntity.status(HttpServletResponse.SC_BAD_REQUEST).body("Request violated security guardrails");
     }
     @ExceptionHandler(MalformedDataStructureException.class)
     public ResponseEntity<?> handleMalformedDataStructureException(MalformedDataStructureException ex) {
-        return ResponseEntity.status(HttpServletResponse.SC_BAD_REQUEST).build();
+        return ResponseEntity.status(HttpServletResponse.SC_BAD_REQUEST).body("Uploaded Data contains malformed structure");
     }
 }

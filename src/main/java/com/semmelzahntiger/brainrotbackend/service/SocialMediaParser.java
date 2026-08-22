@@ -1,5 +1,6 @@
 package com.semmelzahntiger.brainrotbackend.service;
 
+import com.semmelzahntiger.brainrotbackend.util.exceptions.MalformedDataStructureException;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
@@ -9,7 +10,7 @@ import java.util.Map;
 public interface SocialMediaParser {
 
     @NotNull
-    List<SocialMediaResource> parseData(Map<String, byte[]> data);
+    List<SocialMediaResource> parseData(Map<String, byte[]> data) throws MalformedDataStructureException;
 
 
     record LinkResource(SocialMediaPlatform platform, SocialMediaResource.ResourceType type, LocalDate timeStamp, String url) implements SocialMediaResource {

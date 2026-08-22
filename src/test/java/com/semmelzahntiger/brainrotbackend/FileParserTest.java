@@ -54,7 +54,7 @@ public class FileParserTest {
             List<SocialMediaResource> results = instagramParser.parseData(contents);
             int size = results.size();
             System.out.println(size);
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 20; i++) {
                 int idx = RandomUtil.getRandomBetweenSize(size);
                 System.out.println(results.get(idx).toString());
             }

@@ -14,6 +14,7 @@ import java.util.UUID;
 public interface DataEntryRepository extends JpaRepository<DataEntry, Long> {
 
     void deleteByUserid(UUID user_id);
+    void deleteByUseridAndPlatform(UUID user_id, String platform);
     void deleteById(Long id);
 
     @Query(value = "SELECT * FROM entries WHERE user_id = :userId ORDER BY RANDOM() LIMIT :count",

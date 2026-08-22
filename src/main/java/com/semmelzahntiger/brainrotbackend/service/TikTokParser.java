@@ -17,7 +17,7 @@ public class TikTokParser implements SocialMediaParser {
     public static final String TIKTOK_DATA = "user_data_tiktok.json";
 
     @Override
-    public List<SocialMediaResource> parseData(Map<String, byte[]> data) {
+    public List<SocialMediaResource> parseData(Map<String, byte[]> data) throws MalformedDataStructureException {
         byte[] tiktokData = data.get(TIKTOK_DATA);
         if(tiktokData == null) {
             throw new MalformedDataStructureException("Unexpected structure in Tiktok input");
