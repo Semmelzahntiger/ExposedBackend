@@ -1,6 +1,5 @@
 package com.semmelzahntiger.brainrotbackend.api;
 
-import com.semmelzahntiger.brainrotbackend.data.json.response.UnauthorizedResponse;
 import com.semmelzahntiger.brainrotbackend.util.exceptions.MalformedDataStructureException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.tomcat.util.http.fileupload.impl.FileCountLimitExceededException;
@@ -13,7 +12,7 @@ import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 
 @RestControllerAdvice(basePackageClasses = {UploadController.class})
-public class ApiControllerAdvice {
+public class UploadControllerAdvice {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Object> handleUnauthorizedException(AccessDeniedException ex) {

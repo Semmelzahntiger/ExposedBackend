@@ -1,5 +1,6 @@
 package com.semmelzahntiger.brainrotbackend.service;
 
+import com.semmelzahntiger.brainrotbackend.data.entities.UserEntity;
 import com.semmelzahntiger.brainrotbackend.data.repositories.DataEntryRepository;
 import com.semmelzahntiger.brainrotbackend.data.repositories.UserRepository;
 import com.semmelzahntiger.brainrotbackend.data.entities.DataEntry;
@@ -7,6 +8,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,13 +24,14 @@ public class EntryService {
     @Transactional
     public boolean updateEntriesOfPlatform(UUID userId, List<SocialMediaResource> socialMediaResources, SocialMediaPlatform platform) {
         String platformName = platform.getName();
-        boolean userExists = userRepository.existsById(userId);
-        if (!userExists) {
+        Optional<UserEntity> entityOptional = userRepository.findByUserId(userId);
+        if(entityOptional.isEmpty()) {
             return false;
         }
+        UserEntity entity = entityOptional.get();
         dataEntryRepository.deleteByUserEntity_UserIdAndPlatform(userId, platformName);
         List<DataEntry> entries = socialMediaResources.stream()
-                .map(entry -> DataEntry.fromSocialMediaResource(userId, entry)).toList();
+                .map(entry -> DataEntry.fromSocialMediaResource(entity, entry)).toList();
         dataEntryRepository.saveAll(entries);
         return true;
     }
