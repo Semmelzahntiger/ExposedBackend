@@ -1,3 +1,5 @@
+# WIP
+
 # ExposedBackend
 
 This is the backend repository for the social media–based game **"Exposed"**, inspired by the game "WhoLiked?".
