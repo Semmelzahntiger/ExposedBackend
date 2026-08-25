@@ -1,4 +1,5 @@
 package com.semmelzahntiger.brainrotbackend.socket.protocol.incoming;
 
-public class ReturnToLobbyMessage {
-}
+import com.semmelzahntiger.brainrotbackend.socket.protocol.InboundNetworkMessage;
+
+public record ReturnToLobbyMessage() implements InboundNetworkMessage {}

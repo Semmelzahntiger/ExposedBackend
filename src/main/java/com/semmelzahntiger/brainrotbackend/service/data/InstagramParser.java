@@ -1,4 +1,4 @@
-package com.semmelzahntiger.brainrotbackend.service;
+package com.semmelzahntiger.brainrotbackend.service.data;
 
 import com.semmelzahntiger.brainrotbackend.util.JsonUtil;
 import com.semmelzahntiger.brainrotbackend.util.MiscUtil;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Component
+@Component("instagram")
 public class InstagramParser implements SocialMediaParser {
     public static final String LIKED_POST_PATH = "your_instagram_activity/likes/liked_posts.json";
     public static final String SAVED_POST_PATH = "your_instagram_activity/saved/saved_posts.json";
@@ -34,6 +34,11 @@ public class InstagramParser implements SocialMediaParser {
         resources.addAll(getLinksFromPostsByType(savedPostsJson, SocialMediaResource.ResourceType.SAVED));
         resources.addAll(getLinksFromPostsByType(repostedPostsJson, SocialMediaResource.ResourceType.REPOSTS));
         return resources;
+    }
+
+    @Override
+    public SocialMediaPlatform getPlatform() {
+        return SocialMediaPlatform.INSTAGRAM;
     }
 
     private List<SocialMediaResource> getLinksFromPostsByType(JsonNode posts, SocialMediaResource.ResourceType type) {

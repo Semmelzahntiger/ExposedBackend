@@ -1,4 +1,4 @@
-package com.semmelzahntiger.brainrotbackend.service;
+package com.semmelzahntiger.brainrotbackend.service.data;
 
 import org.apache.tomcat.util.http.fileupload.impl.FileCountLimitExceededException;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;

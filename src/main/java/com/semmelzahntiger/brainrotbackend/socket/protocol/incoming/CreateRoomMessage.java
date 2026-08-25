@@ -1,4 +1,6 @@
 package com.semmelzahntiger.brainrotbackend.socket.protocol.incoming;
 
-public class CreateRoomMessage {
-}
+
+import com.semmelzahntiger.brainrotbackend.socket.protocol.InboundNetworkMessage;
+
+public record CreateRoomMessage() implements InboundNetworkMessage {}

@@ -1,4 +1,5 @@
 package com.semmelzahntiger.brainrotbackend.socket.protocol.incoming;
 
-public record ChangeRoleMessage() {
-}
+import com.semmelzahntiger.brainrotbackend.socket.protocol.InboundNetworkMessage;
+
+public record ChangeRoleMessage() implements InboundNetworkMessage {}

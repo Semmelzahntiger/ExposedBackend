@@ -1,4 +1,5 @@
 package com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing;
 
-public record GuessResultMessage() {
-}
+import com.semmelzahntiger.brainrotbackend.socket.protocol.OutboundNetworkMessage;
+
+public record GuessResultMessage() implements OutboundNetworkMessage {}

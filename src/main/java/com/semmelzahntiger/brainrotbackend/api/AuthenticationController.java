@@ -7,17 +7,18 @@ import com.semmelzahntiger.brainrotbackend.data.repositories.RefreshTokenReposit
 import com.semmelzahntiger.brainrotbackend.data.repositories.UserRepository;
 import com.semmelzahntiger.brainrotbackend.data.json.requests.RefreshRequest;
 import com.semmelzahntiger.brainrotbackend.data.json.requests.ValidationRequest;
-import com.semmelzahntiger.brainrotbackend.service.PasswordService;
-import com.semmelzahntiger.brainrotbackend.service.RefreshTokenService;
+import com.semmelzahntiger.brainrotbackend.service.util.PasswordService;
+import com.semmelzahntiger.brainrotbackend.service.auth.RefreshTokenService;
 import com.semmelzahntiger.brainrotbackend.data.json.requests.LoginRequest;
 import com.semmelzahntiger.brainrotbackend.data.json.response.LoginResponse;
 import com.semmelzahntiger.brainrotbackend.data.json.requests.RegistrationRequest;
 import com.semmelzahntiger.brainrotbackend.data.json.response.RegistrationResponse;
-import com.semmelzahntiger.brainrotbackend.service.JWTService;
+import com.semmelzahntiger.brainrotbackend.service.auth.JWTService;
 import com.semmelzahntiger.brainrotbackend.util.UserRoles;
 import com.semmelzahntiger.brainrotbackend.util.ValidatorUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +33,8 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/auth")
+@Slf4j
 public class AuthenticationController {
-    private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -60,7 +61,6 @@ public class AuthenticationController {
         String password = loginRequest.password();
         Optional<UserEntity> user = userRepository.findByEmail(email);
         if (user.isEmpty()) {
-            log.debug("User for request not found");
             return ResponseEntity
                     .status(HttpServletResponse.SC_UNAUTHORIZED)
                     .body(new LoginResponse(false, null, null, "User not found."));

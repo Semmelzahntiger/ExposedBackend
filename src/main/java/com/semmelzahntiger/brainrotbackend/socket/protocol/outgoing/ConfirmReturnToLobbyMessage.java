@@ -1,4 +1,5 @@
 package com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing;
 
-public class ConfirmReturnToLobbyMessage {
-}
+import com.semmelzahntiger.brainrotbackend.socket.protocol.OutboundNetworkMessage;
+
+public record ConfirmReturnToLobbyMessage() implements OutboundNetworkMessage {}

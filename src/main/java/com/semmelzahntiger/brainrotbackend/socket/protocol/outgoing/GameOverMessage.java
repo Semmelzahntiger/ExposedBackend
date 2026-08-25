@@ -1,4 +1,5 @@
 package com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing;
 
-public class GameOverMessage {
-}
+import com.semmelzahntiger.brainrotbackend.socket.protocol.OutboundNetworkMessage;
+
+public record GameOverMessage() implements OutboundNetworkMessage {}

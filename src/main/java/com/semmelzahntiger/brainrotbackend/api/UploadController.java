@@ -1,12 +1,11 @@
 package com.semmelzahntiger.brainrotbackend.api;
 
 import com.semmelzahntiger.brainrotbackend.data.UserPrincipal;
-import com.semmelzahntiger.brainrotbackend.service.EntryService;
-import com.semmelzahntiger.brainrotbackend.service.FileDecoderService;
-import com.semmelzahntiger.brainrotbackend.service.InstagramParser;
-import com.semmelzahntiger.brainrotbackend.service.SocialMediaPlatform;
-import com.semmelzahntiger.brainrotbackend.service.SocialMediaResource;
-import com.semmelzahntiger.brainrotbackend.service.TikTokParser;
+import com.semmelzahntiger.brainrotbackend.service.data.EntryService;
+import com.semmelzahntiger.brainrotbackend.service.data.FileDecoderService;
+import com.semmelzahntiger.brainrotbackend.service.data.SocialMediaParser;
+import com.semmelzahntiger.brainrotbackend.service.data.SocialMediaPlatform;
+import com.semmelzahntiger.brainrotbackend.service.data.SocialMediaResource;
 import com.semmelzahntiger.brainrotbackend.util.exceptions.MalformedDataStructureException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
@@ -26,44 +25,35 @@ import java.util.Map;
 @RequestMapping("api/data")
 public class UploadController {
     private final FileDecoderService fileDecoderService;
-    private final InstagramParser instagramParser;
-    private final TikTokParser tikTokParser;
+    private final Map<String, SocialMediaParser> mediaParsers;
     private final EntryService entryService;
 
-    public UploadController(FileDecoderService fileDecoderService, InstagramParser instagramParser, TikTokParser tikTokParser, EntryService entryService) {
+    public UploadController(FileDecoderService fileDecoderService, Map<String, SocialMediaParser> parsers, EntryService entryService) {
         this.fileDecoderService = fileDecoderService;
-        this.instagramParser = instagramParser;
-        this.tikTokParser = tikTokParser;
+        this.mediaParsers = parsers;
         this.entryService = entryService;
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadUserData(@AuthenticationPrincipal UserPrincipal principal,
-                                            @RequestParam("type") String type,
+    public ResponseEntity<Map<String,String>> uploadUserData(@AuthenticationPrincipal UserPrincipal principal,
+                                            @RequestParam("declaredFileType") String declaredFileType,
                                             @RequestParam("file") MultipartFile file)
             throws IOException, SecurityException, MalformedDataStructureException {
-        if(!type.equals("tiktok") && !type.equals("instagram")) {
-            return ResponseEntity.badRequest().body("Unsupported file type declared");
+        SocialMediaParser parser = mediaParsers.get(declaredFileType);
+        if(parser == null) {
+            return ResponseEntity.badRequest().body(Map.of("error","Unsupported file type declared"));
         }
         InputStream inputStream = file.getInputStream();
         Map<String, byte[]> data =  fileDecoderService.extract(inputStream);
-        List<SocialMediaResource> resources;
-        SocialMediaPlatform platform;
-        if(type.equals("tiktok")) {
-            resources = tikTokParser.parseData(data);
-            platform = SocialMediaPlatform.TIKTOK;
-        }
-        else {
-            resources = instagramParser.parseData(data);
-            platform = SocialMediaPlatform.INSTAGRAM;
-        }
+        List<SocialMediaResource> resources = parser.parseData(data);
+        SocialMediaPlatform platform = parser.getPlatform();
         boolean success = entryService.updateEntriesOfPlatform(principal.userUuid(), resources, platform);
-        return success ? ResponseEntity.ok().build() : ResponseEntity.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).body("Something went wrong during data processing");
+        return success ? ResponseEntity.ok().build() : ResponseEntity.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).body(Map.of("error","Something went wrong during data processing"));
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<?> deleteUserData(@AuthenticationPrincipal UserPrincipal principal) {
+    public ResponseEntity<Map<String,String>> deleteUserData(@AuthenticationPrincipal UserPrincipal principal) {
         boolean success = entryService.deleteEntries(principal.userUuid());
-        return success ? ResponseEntity.ok().body("Data deleted.") : ResponseEntity.badRequest().body("Data for User doesn't exist or couldn't be deleted");
+        return success ? ResponseEntity.ok().body(Map.of("message","Data deleted.")) : ResponseEntity.badRequest().body(Map.of("message","Data for User doesn't exist or couldn't be deleted"));
     }
 }

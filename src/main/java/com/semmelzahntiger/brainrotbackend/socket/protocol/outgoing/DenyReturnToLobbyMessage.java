@@ -1,4 +1,5 @@
 package com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing;
 
-public class DenyReturnToLobbyMessage {
-}
+import com.semmelzahntiger.brainrotbackend.socket.protocol.OutboundNetworkMessage;
+
+public record DenyReturnToLobbyMessage() implements OutboundNetworkMessage {}

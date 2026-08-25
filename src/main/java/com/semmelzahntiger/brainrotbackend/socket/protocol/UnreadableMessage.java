@@ -1,4 +1,4 @@
 package com.semmelzahntiger.brainrotbackend.socket.protocol;
 
-public class UnreadableMessage {
+public class UnreadableMessage implements InboundNetworkMessage {
 }

@@ -1,4 +1,4 @@
-package com.semmelzahntiger.brainrotbackend.service;
+package com.semmelzahntiger.brainrotbackend.service.data;
 
 import com.semmelzahntiger.brainrotbackend.util.exceptions.MalformedDataStructureException;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +12,7 @@ public interface SocialMediaParser {
     @NotNull
     List<SocialMediaResource> parseData(Map<String, byte[]> data) throws MalformedDataStructureException;
 
+    SocialMediaPlatform getPlatform();
 
     record LinkResource(SocialMediaPlatform platform, SocialMediaResource.ResourceType type, LocalDate timeStamp, String url) implements SocialMediaResource {
         @Override

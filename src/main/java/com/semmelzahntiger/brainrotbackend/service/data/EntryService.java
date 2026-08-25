@@ -1,4 +1,4 @@
-package com.semmelzahntiger.brainrotbackend.service;
+package com.semmelzahntiger.brainrotbackend.service.data;
 
 import com.semmelzahntiger.brainrotbackend.data.entities.UserEntity;
 import com.semmelzahntiger.brainrotbackend.data.repositories.DataEntryRepository;

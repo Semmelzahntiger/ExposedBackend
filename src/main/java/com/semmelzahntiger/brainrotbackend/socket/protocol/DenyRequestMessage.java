@@ -1,6 +1,4 @@
-package com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing;
+package com.semmelzahntiger.brainrotbackend.socket.protocol;
 
-import com.semmelzahntiger.brainrotbackend.socket.protocol.OutboundNetworkMessage;
-
-public record DenyRequestMessage(String reason) implements OutboundNetworkMessage {
+public record DenyRequestMessage() implements OutboundNetworkMessage {
 }

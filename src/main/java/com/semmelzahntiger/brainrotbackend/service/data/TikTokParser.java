@@ -1,4 +1,4 @@
-package com.semmelzahntiger.brainrotbackend.service;
+package com.semmelzahntiger.brainrotbackend.service.data;
 
 import com.semmelzahntiger.brainrotbackend.util.DateUtil;
 import com.semmelzahntiger.brainrotbackend.util.JsonUtil;
@@ -8,11 +8,10 @@ import tools.jackson.databind.JsonNode;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@Component
+@Component("tiktok")
 public class TikTokParser implements SocialMediaParser {
     public static final String TIKTOK_DATA = "user_data_tiktok.json";
 
@@ -25,6 +24,12 @@ public class TikTokParser implements SocialMediaParser {
         JsonNode dataJson = JsonUtil.readByteArrayToJson(tiktokData);
         return getResources(dataJson);
     }
+
+    @Override
+    public SocialMediaPlatform getPlatform() {
+        return SocialMediaPlatform.TIKTOK;
+    }
+
     private List<SocialMediaResource> getResources(JsonNode json) {
         List<SocialMediaResource> links = new ArrayList<>();
         JsonNode activity = json.path("Your Activity");

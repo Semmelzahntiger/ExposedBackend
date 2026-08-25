@@ -1,4 +1,5 @@
 package com.semmelzahntiger.brainrotbackend.socket.protocol.incoming;
 
-public class SubmitMultiGuessMessage {
-}
+import com.semmelzahntiger.brainrotbackend.socket.protocol.InboundNetworkMessage;
+
+public record SubmitMultiGuessMessage() implements InboundNetworkMessage {}

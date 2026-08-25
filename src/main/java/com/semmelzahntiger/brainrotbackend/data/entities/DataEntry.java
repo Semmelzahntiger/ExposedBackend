@@ -1,6 +1,6 @@
 package com.semmelzahntiger.brainrotbackend.data.entities;
 
-import com.semmelzahntiger.brainrotbackend.service.SocialMediaResource;
+import com.semmelzahntiger.brainrotbackend.service.data.SocialMediaResource;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,7 +14,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Entity
 @Table(name = "entries")

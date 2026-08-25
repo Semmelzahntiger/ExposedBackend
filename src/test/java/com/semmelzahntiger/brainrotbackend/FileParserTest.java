@@ -1,9 +1,9 @@
 package com.semmelzahntiger.brainrotbackend;
 
-import com.semmelzahntiger.brainrotbackend.service.FileDecoderService;
-import com.semmelzahntiger.brainrotbackend.service.InstagramParser;
-import com.semmelzahntiger.brainrotbackend.service.SocialMediaResource;
-import com.semmelzahntiger.brainrotbackend.service.TikTokParser;
+import com.semmelzahntiger.brainrotbackend.service.data.FileDecoderService;
+import com.semmelzahntiger.brainrotbackend.service.data.InstagramParser;
+import com.semmelzahntiger.brainrotbackend.service.data.SocialMediaResource;
+import com.semmelzahntiger.brainrotbackend.service.data.TikTokParser;
 import com.semmelzahntiger.brainrotbackend.util.RandomUtil;
 import com.semmelzahntiger.brainrotbackend.util.exceptions.MalformedDataStructureException;
 import org.junit.jupiter.api.Assertions;

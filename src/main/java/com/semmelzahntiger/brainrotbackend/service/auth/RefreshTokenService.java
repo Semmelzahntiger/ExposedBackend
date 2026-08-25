@@ -1,4 +1,4 @@
-package com.semmelzahntiger.brainrotbackend.service;
+package com.semmelzahntiger.brainrotbackend.service.auth;
 
 import com.semmelzahntiger.brainrotbackend.data.entities.RefreshTokenEntity;
 import com.semmelzahntiger.brainrotbackend.data.repositories.RefreshTokenRepository;
@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class RefreshTokenService {

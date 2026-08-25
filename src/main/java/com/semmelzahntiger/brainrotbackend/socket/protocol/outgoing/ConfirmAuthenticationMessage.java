@@ -1,4 +1,6 @@
 package com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing;
 
-public class ConfirmAuthenticationMessage {
+import com.semmelzahntiger.brainrotbackend.socket.protocol.OutboundNetworkMessage;
+
+public record ConfirmAuthenticationMessage() implements OutboundNetworkMessage {
 }

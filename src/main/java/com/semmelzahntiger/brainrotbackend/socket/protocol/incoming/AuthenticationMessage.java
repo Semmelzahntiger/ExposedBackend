@@ -1,6 +1,5 @@
 package com.semmelzahntiger.brainrotbackend.socket.protocol.incoming;
 
-import com.semmelzahntiger.brainrotbackend.socket.protocol.AbstractMessage;
+import com.semmelzahntiger.brainrotbackend.socket.protocol.InboundNetworkMessage;
 
-public class AuthenticationMessage implements AbstractMessage {
-}
+public record AuthenticationMessage(String type, String token) implements InboundNetworkMessage {}

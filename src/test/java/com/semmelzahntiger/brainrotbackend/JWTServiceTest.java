@@ -4,8 +4,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.semmelzahntiger.brainrotbackend.data.AppUser;
-import com.semmelzahntiger.brainrotbackend.service.EnvironmentService;
-import com.semmelzahntiger.brainrotbackend.service.JWTService;
+import com.semmelzahntiger.brainrotbackend.service.util.EnvironmentService;
+import com.semmelzahntiger.brainrotbackend.service.auth.JWTService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,7 +50,7 @@ public class JWTServiceTest {
     void setUp() {
         when(environmentService.getSecret()).thenReturn(SECRET);
         userId = UUID.randomUUID();
-        appUser = new AppUser(userId, "brainrot_enjoyer", "skibidi@example.com", "hunter2");
+        appUser = new AppUser(userId, "brainrot_enjoyer", "skibidi@example.com", List.of("USER"));
     }
 
     // ---------------------------------------------------------------------

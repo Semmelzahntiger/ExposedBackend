@@ -1,4 +1,6 @@
 package com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing;
 
-public class DenyAuthenticationMessage {
+import com.semmelzahntiger.brainrotbackend.socket.protocol.OutboundNetworkMessage;
+
+public record DenyAuthenticationMessage() implements OutboundNetworkMessage {
 }

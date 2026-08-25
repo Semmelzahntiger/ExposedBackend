@@ -2,7 +2,7 @@ package com.semmelzahntiger.brainrotbackend.config.security;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.semmelzahntiger.brainrotbackend.data.UserPrincipal;
-import com.semmelzahntiger.brainrotbackend.service.JWTService;
+import com.semmelzahntiger.brainrotbackend.service.auth.JWTService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

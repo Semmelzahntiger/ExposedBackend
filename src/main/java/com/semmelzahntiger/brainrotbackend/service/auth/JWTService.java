@@ -1,4 +1,4 @@
-package com.semmelzahntiger.brainrotbackend.service;
+package com.semmelzahntiger.brainrotbackend.service.auth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -7,13 +7,18 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.semmelzahntiger.brainrotbackend.data.AppUser;
 import com.semmelzahntiger.brainrotbackend.data.entities.UserEntity;
+import com.semmelzahntiger.brainrotbackend.service.util.EnvironmentService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
+@Slf4j
 public class JWTService {
     private final EnvironmentService environmentService;
     public JWTService (EnvironmentService envService) {
@@ -55,7 +60,19 @@ public class JWTService {
     public boolean validJWTToken(String token) {
         return getDecodedJWT(token).isPresent();
     }
+    public Optional<AppUser> getJWTDataFromToken(String token) {
+        Optional<DecodedJWT> decodedOptional = getDecodedJWT(token);
+        if(decodedOptional.isPresent()) {
+            DecodedJWT decoded = decodedOptional.get();
+            UUID uuid = UUID.fromString(decoded.getSubject());
+            String email = String.valueOf(decoded.getClaim("email"));
+            String username = String.valueOf(decoded.getClaim("username"));
+            List<String> authorities = List.of(decoded.getClaim("authorities").asArray(String.class));
+            return Optional.of(new AppUser(uuid, email, username, authorities));
+        }
+        log.info("JWT INVALID");
+        return Optional.empty();
+    }
 
-
-
+    public record JWTData(UUID userId, String email,String username, List<String> authorities) {}
 }
