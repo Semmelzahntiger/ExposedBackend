@@ -9,7 +9,7 @@ public interface GameMessageListener<T extends InboundNetworkMessage> {
 
     // Pre Authorization
     default void handle(T message, GameUser user, GameManager manager) {
-        if(user.getUserState() == GameUser.UserState.UNAUTHENTICATED) {
+        if(user.getUserState() == GameUser.UserAuthState.UNAUTHENTICATED) {
             return;
         }
         handleMessage(message, user, manager);

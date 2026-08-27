@@ -2,4 +2,5 @@ package com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing;
 
 import com.semmelzahntiger.brainrotbackend.socket.protocol.OutboundNetworkMessage;
 
-public record DenyJoinRoomMessage(String error) implements OutboundNetworkMessage {}
+public record DenyCreateRoomMessage(String reason) implements OutboundNetworkMessage {
+}

@@ -1,6 +1,7 @@
 package com.semmelzahntiger.brainrotbackend.game;
 
 import com.semmelzahntiger.brainrotbackend.game.auth.UserManager;
+import com.semmelzahntiger.brainrotbackend.game.room.RoomManager;
 import com.semmelzahntiger.brainrotbackend.service.socket.SocketMessageHandler;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.InboundNetworkMessage;
 import lombok.Getter;
@@ -16,11 +17,14 @@ public class GameManager {
     private final UserManager userManager;
     private final SocketMessageHandler messageHandler;
     private final GameMessageManager messageManager;
+    @Getter
+    private final RoomManager roomManager;
 
-    public GameManager(SocketMessageHandler messageHandler, UserManager connectionManager, GameMessageManager manager) {
+    public GameManager(SocketMessageHandler messageHandler, UserManager connectionManager, GameMessageManager manager, RoomManager roomManager) {
         this.messageHandler = messageHandler;
         this.userManager = connectionManager;
         this.messageManager = manager;
+        this.roomManager = roomManager;
     }
 
     public void addNewIncomingConnection(WebSocketSession session) {

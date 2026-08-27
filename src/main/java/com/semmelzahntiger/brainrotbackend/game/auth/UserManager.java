@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,6 +19,7 @@ public class UserManager {
     private final Map<String, GameUser> users = new ConcurrentHashMap<>();
     private final Map<UUID, String> uuidSessionMap = new ConcurrentHashMap<>();
     private final Map<String, UUID> sessionUUIDMap = new ConcurrentHashMap<>();
+
 
     public UserManager(SocketAuthenticationService socketAuthenticationService) {
         this.socketAuthenticationService = socketAuthenticationService;
@@ -51,25 +51,34 @@ public class UserManager {
         return Optional.ofNullable(sessionUUIDMap.get(session));
     }
 
-    public boolean authorizeConnection(GameUser user, String token) {
-        AppUser appUser = socketAuthenticationService.resolveUserByJWTToken(token);
-        if(appUser != null) {
-            log.info("Valid JWT");
-            UUID uuid = appUser.getUserId();
-            if(uuidSessionMap.containsKey(uuid)) {
-                return false;
-            }
-            boolean success = user.authenticateAs(appUser);
-            if(success) {
-                uuidSessionMap.put(uuid, user.getSessionId());
-                sessionUUIDMap.put(user.getSessionId(), uuid);
-            }
-            log.info("User '{}' logged into Socket",appUser.getEmail());
-            return true;
-        }
-        else {
+
+    private final Object authLock = new Object();
+
+    public boolean authenticateConnection(GameUser user, String token) {
+        if (user.isAuthenticated()) {
             return false;
         }
+
+        AppUser appUser = socketAuthenticationService.resolveUserByJWTToken(token);
+        if (appUser == null) {
+            return false;
+        }
+
+        UUID uuid = appUser.getUserId();
+        String sessionId = user.getSessionId();
+
+        synchronized (authLock) {
+            if (uuidSessionMap.containsKey(uuid)) {
+                return false;
+            }
+            uuidSessionMap.put(uuid, sessionId);
+            sessionUUIDMap.put(sessionId, uuid);
+        }
+
+        user.authenticateAs(appUser);
+
+        log.info("User '{}' authenticated in Socket Connection", appUser.getEmail());
+        return true;
     }
     public void connectionClosed(WebSocketSession session) {
         connectionClosed(session.getId());
@@ -79,7 +88,7 @@ public class UserManager {
     }
     public void connectionClosed(String sessionId) {
         GameUser gameUser = users.get(sessionId);
-        log.info("'{}' disconnected. ({})", gameUser.getUserConnection().getRemoteAddress(), gameUser.getUserState().equals(GameUser.UserState.AUTHENTICATED) ?  gameUser.getUsername() : "Unauthenticated");
+        log.info("'{}' disconnected. ({})", gameUser.getConnection().getRemoteAddress(), gameUser.getUserState().equals(GameUser.UserAuthState.AUTHENTICATED) ?  gameUser.getUsername() : "Unauthenticated");
         // Todo: Cleanup
 
         //

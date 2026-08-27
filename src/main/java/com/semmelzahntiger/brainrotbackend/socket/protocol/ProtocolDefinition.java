@@ -25,13 +25,16 @@ public class ProtocolDefinition {
     public static final String DENY_START_GAME = "denied_start_game";
     public static final String CONFIRM_RETURN_TO_LOBBY_MESSAGE = "confirm_return_to_lobby";
     public static final String DENY_RETURN_TO_LOBBY_MESSAGE = "denied_return_to_lobby";
-    public static final String UPDATE_LOBBY_STATE_MESSAGE = "update_lobby_state";
+    public static final String UPDATE_ROOM_STATE_MESSAGE = "update_room_state";
     public static final String NEXT_ROUND_MESSAGE = "next_round";
     public static final String GUESS_RESULT_MESSAGE = "guess_result";
     public static final String MULTI_GUESS_RESULT_MESSAGE = "multi_guess_result";
     public static final String GAME_SCORE_STATE_MESSAGE = "game_score_state";
     public static final String GAME_OVER_MESSAGE = "game_over";
+    public static final String ROOM_NOT_FOUND_MESSAGE = "room_not_found";
 
-
+    public static final String CONFIRM_CREATE_ROOM_MESSAGE = "confirm_create_room";
+    public static final String DENY_CREATE_ROOM_MESSAGE = "denied_create_room";
+    public static final String CONFIRM_LEAVE_ROOM_MESSAGE = "confirm_leave_room";
 
 }

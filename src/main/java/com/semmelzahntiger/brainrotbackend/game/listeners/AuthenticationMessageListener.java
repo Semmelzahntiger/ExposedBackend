@@ -23,14 +23,14 @@ public class AuthenticationMessageListener implements GameMessageListener<Authen
 
     @Override
     public void handleMessage(AuthenticationMessage message, GameUser user, GameManager manager) {
-        boolean success = manager.getUserManager().authorizeConnection(user, message.token());
+        boolean success = manager.getUserManager().authenticateConnection(user, message.token());
         if(success) {
             log.info("'{}' logged in successfully.", user.getUsername());
-            user.getUserConnection().sendMessage(new ConfirmAuthenticationMessage());
+            user.getConnection().sendMessage(new ConfirmAuthenticationMessage());
         }
         else {
-            log.info("'{}' failed to authenticate", user.getUserConnection().getRemoteAddress());
-            user.getUserConnection().sendMessage(new DenyAuthenticationMessage());
+            log.info("'{}' failed to authenticate", user.getConnection().getRemoteAddress());
+            user.getConnection().sendMessage(new DenyAuthenticationMessage());
         }
     }
 }

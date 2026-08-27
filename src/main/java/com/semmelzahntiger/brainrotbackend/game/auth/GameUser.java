@@ -2,58 +2,72 @@ package com.semmelzahntiger.brainrotbackend.game.auth;
 
 import com.semmelzahntiger.brainrotbackend.data.AppUser;
 import com.semmelzahntiger.brainrotbackend.game.UserConnection;
+import com.semmelzahntiger.brainrotbackend.game.room.Room;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.juli.logging.LogFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.socket.WebSocketSession;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Getter
 @Slf4j
 public class GameUser {
-    public enum UserState {
+    public enum UserAuthState {
         UNAUTHENTICATED,
         AUTHENTICATED
     }
-    @Getter
-    private @NotNull UserState userState = UserState.UNAUTHENTICATED;
+    public enum UserGameState {
+        MAIN_MENU,
+        IN_ROOM,
+        IN_GAME
+    }
+    private @NotNull GameUser.UserAuthState userState = UserAuthState.UNAUTHENTICATED;
+    private @NotNull UserGameState gameState = UserGameState.MAIN_MENU;
 
     private boolean authenticated = false;
-    @Getter
-    private @Nullable UUID userUUID;
-    @Getter
-    private @Nullable String username;
-    @Getter
-    private @Nullable String email;
-    @Getter
-    private List<String> authorities = new ArrayList<>();
-    @Getter
-    private final UserConnection userConnection;
+    private @Nullable UUID userUUID = null;
+    private @Nullable String username = null;
+    private @Nullable String email = null;
+    private final List<String> authorities = new ArrayList<>();
+    private final UserConnection connection;
+    private @Nullable String currentRoomCode = null;
+    private @Nullable Room currentRoom = null;
+
 
     public GameUser(UserConnection userConnection) {
-        this.userConnection = userConnection;
+        this.connection = userConnection;
     }
     public String getSessionId() {
-        return userConnection.getSessionId();
+        return connection.getSessionId();
     }
 
-    public boolean authenticateAs(AppUser appUser) {
-        if(authenticated) {
-            log.warn("Tried to authenticate already authenticated user.");
-            return false;
-        }
+    public void authenticateAs(AppUser appUser) {
         authenticated = true;
-        userState = UserState.AUTHENTICATED;
+        userState = UserAuthState.AUTHENTICATED;
         this.userUUID = appUser.getUserId();
         this.username = appUser.getUsername();
         this.email = appUser.getEmail();
         authorities.addAll(appUser.getAuthorities());
+    }
+    public synchronized boolean setRoom(@Nullable Room room) {
+        if(room == null) {
+            gameState = UserGameState.MAIN_MENU;
+            currentRoom = null;
+            currentRoomCode = null;
+            return true;
+        }
+        if(currentRoom != null) {
+            log.warn("User already in Room.");
+            return false;
+        }
+        currentRoom = room;
+        currentRoomCode = room.getRoomCode();
         return true;
+    }
+    public boolean inRoom() {
+        return currentRoom != null;
     }
 }

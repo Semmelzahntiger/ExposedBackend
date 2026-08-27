@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @Table(name = "entries")
@@ -39,6 +40,9 @@ public class DataEntry {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
+
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private UUID user_id;
 
     @Column(name = "platform", nullable = false)
     private String platform;
