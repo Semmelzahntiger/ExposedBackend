@@ -2,4 +2,4 @@ package com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing;
 
 import com.semmelzahntiger.brainrotbackend.socket.protocol.OutboundNetworkMessage;
 
-public record DenyStartGame() implements OutboundNetworkMessage {}
+public record DenyStartGame(String reason) implements OutboundNetworkMessage {}

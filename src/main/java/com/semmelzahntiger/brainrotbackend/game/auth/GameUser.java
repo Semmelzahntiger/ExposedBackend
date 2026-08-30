@@ -19,13 +19,7 @@ public class GameUser {
         UNAUTHENTICATED,
         AUTHENTICATED
     }
-    public enum UserGameState {
-        MAIN_MENU,
-        IN_ROOM,
-        IN_GAME
-    }
     private @NotNull GameUser.UserAuthState userState = UserAuthState.UNAUTHENTICATED;
-    private @NotNull UserGameState gameState = UserGameState.MAIN_MENU;
 
     private boolean authenticated = false;
     private @Nullable UUID userUUID = null;
@@ -54,7 +48,6 @@ public class GameUser {
     }
     public synchronized boolean setRoom(@Nullable Room room) {
         if(room == null) {
-            gameState = UserGameState.MAIN_MENU;
             currentRoom = null;
             currentRoomCode = null;
             return true;

@@ -18,9 +18,9 @@ public class CreateRoomMessageListener implements GameMessageListener<CreateRoom
 
     @Override
     public void handleMessage(CreateRoomMessage message, GameUser user, GameManager manager) {
-        if(user.inRoom()) {
-            manager.getRoomManager().createRoom(user);
+        if(!user.inRoom()) {
             user.getConnection().sendMessage(new ConfirmCreateRoomMessage());
+            manager.getRoomManager().createRoom(user);
         }
         else {
             user.getConnection().sendMessage(new DenyCreateRoomMessage("User is already in a room."));

@@ -3,22 +3,22 @@ package com.semmelzahntiger.brainrotbackend.game.listeners;
 import com.semmelzahntiger.brainrotbackend.game.GameManager;
 import com.semmelzahntiger.brainrotbackend.game.auth.GameUser;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.DenyRequestMessage;
-import com.semmelzahntiger.brainrotbackend.socket.protocol.incoming.SubmitGuessMessage;
+import com.semmelzahntiger.brainrotbackend.socket.protocol.incoming.SkipRoundMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class SubmitGuessMessageListener implements GameMessageListener<SubmitGuessMessage> {
+public class SkipRoundMessageListener implements GameMessageListener<SkipRoundMessage> {
     @Override
-    public Class<SubmitGuessMessage> getMessageClass() {
-        return SubmitGuessMessage.class;
+    public Class<SkipRoundMessage> getMessageClass() {
+        return SkipRoundMessage.class;
     }
 
     @Override
-    public void handleMessage(SubmitGuessMessage message, GameUser user, GameManager manager) {
+    public void handleMessage(SkipRoundMessage message, GameUser user, GameManager manager) {
         if(user.inRoom()) {
-            user.getCurrentRoom().submitGuess(user, message.guessedUUID());
+            user.getCurrentRoom().skipRound(user);
         }
         else {
             user.getConnection().sendMessage(new DenyRequestMessage());

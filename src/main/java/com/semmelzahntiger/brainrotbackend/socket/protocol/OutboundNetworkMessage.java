@@ -7,16 +7,15 @@ import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.ConfirmChang
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.ConfirmCreateRoomMessage;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.ConfirmJoinRoomMessage;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.ConfirmLeaveRoomMessage;
-import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.ConfirmReturnToLobbyMessage;
+import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.ConfirmSubmissionMessage;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.DenyAuthenticationMessage;
+import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.DenySubmissionMessage;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.DenyChangeRoomMessage;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.DenyCreateRoomMessage;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.DenyJoinRoomMessage;
-import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.DenyReturnToLobbyMessage;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.DenyStartGame;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.GameOverMessage;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.UpdateGameScoreStateMessage;
-import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.GuessResultMessage;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.MultiGuessResultMessage;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.NextRoundMessage;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.RoomNotFoundMessage;
@@ -39,17 +38,16 @@ import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.UpdateRoomSt
         @JsonSubTypes.Type(value = DenyChangeRoomMessage.class, name = ProtocolDefinition.DENY_CHANGE_ROOM_MESSAGE),
         @JsonSubTypes.Type(value = StartedGameMessage.class, name = ProtocolDefinition.STARTED_GAME_MESSAGE),
         @JsonSubTypes.Type(value = DenyStartGame.class, name = ProtocolDefinition.DENY_START_GAME),
-        @JsonSubTypes.Type(value = ConfirmReturnToLobbyMessage.class, name = ProtocolDefinition.CONFIRM_RETURN_TO_LOBBY_MESSAGE),
-        @JsonSubTypes.Type(value = DenyReturnToLobbyMessage.class, name = ProtocolDefinition.DENY_RETURN_TO_LOBBY_MESSAGE),
         @JsonSubTypes.Type(value = UpdateRoomStateMessage.class, name = ProtocolDefinition.UPDATE_ROOM_STATE_MESSAGE),
         @JsonSubTypes.Type(value = NextRoundMessage.class, name = ProtocolDefinition.NEXT_ROUND_MESSAGE),
-        @JsonSubTypes.Type(value = GuessResultMessage.class, name = ProtocolDefinition.GUESS_RESULT_MESSAGE),
         @JsonSubTypes.Type(value = MultiGuessResultMessage.class, name = ProtocolDefinition.MULTI_GUESS_RESULT_MESSAGE),
         @JsonSubTypes.Type(value = UpdateGameScoreStateMessage.class, name = ProtocolDefinition.GAME_SCORE_STATE_MESSAGE),
         @JsonSubTypes.Type(value = GameOverMessage.class, name = ProtocolDefinition.GAME_OVER_MESSAGE),
         @JsonSubTypes.Type(value = RoomNotFoundMessage.class, name = ProtocolDefinition.ROOM_NOT_FOUND_MESSAGE),
         @JsonSubTypes.Type(value = ConfirmCreateRoomMessage.class, name = ProtocolDefinition.CONFIRM_CREATE_ROOM_MESSAGE),
         @JsonSubTypes.Type(value = DenyCreateRoomMessage.class, name = ProtocolDefinition.DENY_CREATE_ROOM_MESSAGE),
-        @JsonSubTypes.Type(value = ConfirmLeaveRoomMessage.class, name = ProtocolDefinition.CONFIRM_LEAVE_ROOM_MESSAGE)
+        @JsonSubTypes.Type(value = ConfirmLeaveRoomMessage.class, name = ProtocolDefinition.CONFIRM_LEAVE_ROOM_MESSAGE),
+        @JsonSubTypes.Type(value = ConfirmSubmissionMessage.class, name = ProtocolDefinition.CONFIRM_SUBMISSION_MESSAGE),
+        @JsonSubTypes.Type(value = DenySubmissionMessage.class, name = ProtocolDefinition.DENY_SUBMISSION_MESSAGE)
 })
 public interface OutboundNetworkMessage {}

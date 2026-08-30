@@ -2,6 +2,7 @@ package com.semmelzahntiger.brainrotbackend.game.listeners;
 
 import com.semmelzahntiger.brainrotbackend.game.GameManager;
 import com.semmelzahntiger.brainrotbackend.game.auth.GameUser;
+import com.semmelzahntiger.brainrotbackend.socket.protocol.DenyRequestMessage;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.incoming.ChangeLobbyAdminMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,11 @@ public class ChangeLobbyAdminMessageListener implements GameMessageListener<Chan
 
     @Override
     public void handleMessage(ChangeLobbyAdminMessage message, GameUser user, GameManager manager) {
-
+        if(user.inRoom()) {
+            user.getCurrentRoom().changeHost(user, message.newAdminUUID());
+        }
+        else {
+            user.getConnection().sendMessage(new DenyRequestMessage());
+        }
     }
 }

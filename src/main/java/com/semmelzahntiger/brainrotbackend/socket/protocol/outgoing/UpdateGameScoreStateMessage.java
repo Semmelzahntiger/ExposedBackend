@@ -5,6 +5,6 @@ import com.semmelzahntiger.brainrotbackend.socket.protocol.OutboundNetworkMessag
 import java.util.List;
 import java.util.UUID;
 
-public record UpdateGameScoreStateMessage(List<RoomPlayer> players) implements OutboundNetworkMessage {
-    public record RoomPlayer(UUID playerUUID, String username, int score) {}
+public record UpdateGameScoreStateMessage(UUID ownUUID, List<RoomPlayer> players) implements OutboundNetworkMessage {
+    public record RoomPlayer(UUID playerUUID, String username, int score, int earnedThisRound) {}
 }

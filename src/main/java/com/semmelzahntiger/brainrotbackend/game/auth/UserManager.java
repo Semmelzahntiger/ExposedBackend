@@ -38,7 +38,7 @@ public class UserManager {
     }
 
     public Optional<GameUser> getUserBySessionId(String sessionId) {
-        return Optional.of(users.get(sessionId));
+        return Optional.ofNullable(users.get(sessionId));
     }
     public Optional<GameUser> getUserByUserUUID(UUID userUUID) {
         String sessionId = uuidSessionMap.get(userUUID);
@@ -88,10 +88,15 @@ public class UserManager {
     }
     public void connectionClosed(String sessionId) {
         GameUser gameUser = users.get(sessionId);
+        if(gameUser == null) {
+            return;
+        }
         log.info("'{}' disconnected. ({})", gameUser.getConnection().getRemoteAddress(), gameUser.getUserState().equals(GameUser.UserAuthState.AUTHENTICATED) ?  gameUser.getUsername() : "Unauthenticated");
-        // Todo: Cleanup
 
-        //
+        if(gameUser.inRoom()) {
+            gameUser.getCurrentRoom().leaveRoom(gameUser);
+        }
+
         users.remove(sessionId);
         UUID userUUID = sessionUUIDMap.get(sessionId);
         sessionUUIDMap.remove(sessionId);

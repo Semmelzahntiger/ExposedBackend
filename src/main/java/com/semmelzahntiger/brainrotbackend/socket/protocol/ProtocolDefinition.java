@@ -8,11 +8,10 @@ public class ProtocolDefinition {
     public static final String INCOMING_LEAVE_ROOM_MESSAGE = "leave_room";
     public static final String INCOMING_CHANGE_ROOM_SETTINGS = "change_room_settings";
     public static final String INCOMING_START_GAME_MESSAGE = "start_game";
-    public static final String INCOMING_RETURN_TO_LOBBY_MESSAGE = "return_to_lobby";
-    public static final String INCOMING_CHANGE_ROLE_MESSAGE = "change_role";
     public static final String INCOMING_SUBMIT_GUESS_MESSAGE = "submit_guess";
     public static final String INCOMING_SUBMIT_MULTI_GUESS_MESSAGE = "submit_multi_guess";
     public static final String INCOMING_CHANGE_LOBBY_ADMIN_MESSAGE = "change_lobby_admin";
+    public static final String INCOMING_SKIP_ROUND_MESSAGE = "skip_round";
 
     // Outgoing Message Definition
     public static final String CONFIRM_AUTHENTICATION_MESSAGE = "confirm_authentication";
@@ -23,11 +22,8 @@ public class ProtocolDefinition {
     public static final String DENY_CHANGE_ROOM_MESSAGE = "denied_change_room_settings";
     public static final String STARTED_GAME_MESSAGE = "started_game";
     public static final String DENY_START_GAME = "denied_start_game";
-    public static final String CONFIRM_RETURN_TO_LOBBY_MESSAGE = "confirm_return_to_lobby";
-    public static final String DENY_RETURN_TO_LOBBY_MESSAGE = "denied_return_to_lobby";
     public static final String UPDATE_ROOM_STATE_MESSAGE = "update_room_state";
     public static final String NEXT_ROUND_MESSAGE = "next_round";
-    public static final String GUESS_RESULT_MESSAGE = "guess_result";
     public static final String MULTI_GUESS_RESULT_MESSAGE = "multi_guess_result";
     public static final String GAME_SCORE_STATE_MESSAGE = "game_score_state";
     public static final String GAME_OVER_MESSAGE = "game_over";
@@ -36,5 +32,7 @@ public class ProtocolDefinition {
     public static final String CONFIRM_CREATE_ROOM_MESSAGE = "confirm_create_room";
     public static final String DENY_CREATE_ROOM_MESSAGE = "denied_create_room";
     public static final String CONFIRM_LEAVE_ROOM_MESSAGE = "confirm_leave_room";
+    public static final String CONFIRM_SUBMISSION_MESSAGE = "confirm_submission";
+    public static final String DENY_SUBMISSION_MESSAGE = "denied_submission";
 
 }
