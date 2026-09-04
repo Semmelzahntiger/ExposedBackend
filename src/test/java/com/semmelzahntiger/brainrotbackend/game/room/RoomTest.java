@@ -6,6 +6,7 @@ import com.semmelzahntiger.brainrotbackend.game.UserConnection;
 import com.semmelzahntiger.brainrotbackend.game.auth.GameUser;
 import com.semmelzahntiger.brainrotbackend.service.data.SocialMediaPlatform;
 import com.semmelzahntiger.brainrotbackend.service.data.SocialMediaResource;
+import com.semmelzahntiger.brainrotbackend.service.util.ResolverService;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.ConfirmChangeRoomSettings;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.DenyChangeRoomMessage;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.UpdateRoomStateMessage;
@@ -42,6 +43,8 @@ class RoomTest {
 
     @Mock
     private DataEntryRepository dataEntryRepository;
+    @Mock
+    private ResolverService resolverService;
 
     /** Completed by the close callback with the closed room's code. */
     private CompletableFuture<String> closed;
@@ -52,7 +55,7 @@ class RoomTest {
     void setUp() {
         closed = new CompletableFuture<>();
         host = user("host");
-        room = new Room(host, code -> closed.complete(code), dataEntryRepository);
+        room = new Room(host, code -> closed.complete(code), dataEntryRepository, resolverService);
         flush(); // wait for the constructor's async host-join to land
     }
 

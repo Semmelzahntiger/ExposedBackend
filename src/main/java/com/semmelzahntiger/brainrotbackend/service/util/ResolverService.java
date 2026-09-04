@@ -2,6 +2,8 @@ package com.semmelzahntiger.brainrotbackend.service.util;
 
 
 import com.semmelzahntiger.brainrotbackend.service.util.cdn.AbstractMediaItem;
+import com.semmelzahntiger.brainrotbackend.util.Constants;
+import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +19,11 @@ public class ResolverService {
         this.resolvers = resolvers;
     }
 
-    public AbstractMediaItem resolveContents(String url) {
+    public @Nullable AbstractMediaItem resolveContents(String url) {
         String resolvedPlatform = resolvePlatform(url);
-        CdnResolver resolver = resolvers.get(resolvedPlatform);
+        CdnResolver resolver = resolvers.get(resolvedPlatform + "_resolver");
         if(resolver == null) {
-            log.warn("Link could not be resolved.");
+            log.warn("Link could not be resolved. No fitting Resolver found");
             return null;
         }
         try {
@@ -33,6 +35,14 @@ public class ResolverService {
     }
 
     private String resolvePlatform(String url) {
-        return "";
+        if(url.contains("www.tiktok.com")) {
+            return Constants.TIKTOK;
+        }
+        else if(url.contains("www.instagram.com")) {
+            return Constants.INSTAGRAM;
+        }
+        else {
+            return "";
+        }
     }
 }

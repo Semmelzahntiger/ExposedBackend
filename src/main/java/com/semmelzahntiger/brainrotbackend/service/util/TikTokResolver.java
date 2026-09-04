@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Service(Constants.TIKTOK)
+@Service("tiktok_resolver")
 @Slf4j
 // Big Credits go to yt-dlp for the internal mechanism
 public class TikTokResolver implements CdnResolver {
@@ -83,17 +83,17 @@ public class TikTokResolver implements CdnResolver {
                 .build();
 
         try (Response response = httpClient.newCall(request).execute()) {
-            log.info("------- COOKIE JAR -------");
+            log.debug("------- COOKIE JAR -------");
             String ttChainToken = "";
             for (Cookie c : ((InMemoryCookieJar) httpClient.cookieJar()).loadForRequest(
                     HttpUrl.parse("https://www.tiktok.com/"))) {
-                log.info(c.value());
+                log.debug(c.value());
                 if (c.name().equals("tt_chain_token")) {
                     ttChainToken = c.value();
                     log.info("tt_chain_token={}", c.value());
                 }
             }
-            log.info("------- CLOSED JAR -------");
+            log.debug("------- CLOSED JAR -------");
             String content = response.body().string();
             String finalUrl = response.request().url().toString();
             return new WebpageResult(content, finalUrl, ttChainToken);
@@ -173,7 +173,7 @@ public class TikTokResolver implements CdnResolver {
                     audioUrl = candidate;
                 }
             }
-            return new TikTokSlideshowItem(imageUrls, audioUrl, url);
+            return new TikTokSlideshowItem(imageUrls, audioUrl);
         } else {
             boolean hasVideo = itemStruct.path("video").isObject();
             boolean isClassified = itemStruct.path("isContentClassified").asBoolean(false);
@@ -183,7 +183,7 @@ public class TikTokResolver implements CdnResolver {
             }
 
             String videoUrl = extractBestWebFormat(itemStruct);
-            return new TikTokVideoItem(videoUrl, url, result.cookie());
+            return new TikTokVideoItem(videoUrl, "https://www.tiktok.com/", result.cookie());
         }
     }
     /**

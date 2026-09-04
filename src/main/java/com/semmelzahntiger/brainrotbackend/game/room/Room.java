@@ -5,6 +5,10 @@ import com.semmelzahntiger.brainrotbackend.game.RoomSettings;
 import com.semmelzahntiger.brainrotbackend.game.auth.GameUser;
 import com.semmelzahntiger.brainrotbackend.service.data.SocialMediaPlatform;
 import com.semmelzahntiger.brainrotbackend.service.data.SocialMediaResource;
+import com.semmelzahntiger.brainrotbackend.service.util.ResolverService;
+import com.semmelzahntiger.brainrotbackend.service.util.cdn.AbstractMediaItem;
+import com.semmelzahntiger.brainrotbackend.service.util.cdn.MissingMediaItem;
+import com.semmelzahntiger.brainrotbackend.service.util.cdn.StringMediaItem;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.ConfirmChangeRoomSettings;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.ConfirmSubmissionMessage;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.DenyChangeRoomMessage;
@@ -52,7 +56,6 @@ public class Room {
             .map(SocialMediaPlatform::getName).collect(Collectors.toSet());
     private static final Set<String> VALID_RESOURCES = Arrays.stream(SocialMediaResource.ResourceType.values())
             .map(SocialMediaResource.ResourceType::getName).collect(Collectors.toSet());
-
     @Getter
     protected boolean stillOpen = true;
     @Getter
@@ -66,6 +69,7 @@ public class Room {
     protected final CountDownLatch roomClosure = new CountDownLatch(1);
     protected final Consumer<String> onCloseCallback;
     private final DataEntryRepository dataEntryRepository;
+    private final ResolverService resolverService;
     @Getter
     protected volatile boolean gameStarted = false;
     @Getter
@@ -77,10 +81,11 @@ public class Room {
 
 
 
-    public Room(GameUser host, Consumer<String> onCloseCallback, DataEntryRepository dataEntryRepository) {
+    public Room(GameUser host, Consumer<String> onCloseCallback, DataEntryRepository dataEntryRepository, ResolverService resolverService) {
         this.host = host;
         this.onCloseCallback = onCloseCallback;
         this.dataEntryRepository = dataEntryRepository;
+        this.resolverService = resolverService;
         runRoomLoop();
         joinRoom(host);
     }
@@ -302,13 +307,25 @@ public class Room {
             endGame();
             return;
         }
+        GameData.UserEntry userEntry = game.getCurrentEntry();
+        AbstractMediaItem abstractMediaItem = resolveAbstractMediaItem(userEntry);
+        if(abstractMediaItem == null) {
+            abstractMediaItem = new MissingMediaItem(SocialMediaPlatform.getByPlatformName(userEntry.platform()));
+        }
         game.initNextRoundData();
         roundCounter++;
         activeRoundToken = roundCounter;
         int token = activeRoundToken;
-        broadcastNextRound();
+        broadcastNextRound(abstractMediaItem);
         roundTimeout = ThreadUtil.scheduleTask(() -> submitTask(() -> completeRound(token)),
                 getSettings().getRoundTimeInSeconds(), TimeUnit.SECONDS);
+    }
+    private AbstractMediaItem resolveAbstractMediaItem(GameData.UserEntry currentEntry) {
+        return switch (currentEntry.dataType()) {
+            case "liked", "saved", "reposted" -> resolverService.resolveContents(currentEntry.ref());
+            case "commented", "searched" -> new StringMediaItem(SocialMediaPlatform.getByPlatformName(currentEntry.platform()), currentEntry.ref());
+            default -> null;
+        };
     }
     // Completes Round. If somehow triggered by lingering timeout, return immediately. Cancels old timeouts. Initiates next round
     protected void completeRound(int token) {
@@ -356,11 +373,11 @@ public class Room {
             player.getConnection().sendMessage(new UpdateRoomStateMessage(getRoomCode(), playerRoles, playerIsHost, settingsState));
         }
     }
-    protected void broadcastNextRound() {
+    protected void broadcastNextRound(AbstractMediaItem mediaItem) {
         if(game == null || game.getCurrentEntry() == null) {
             log.error("BroadcastNextRound Message occurred outside of intended game cycle.");
         }
-        NextRoundMessage nextRoundMessage = new NextRoundMessage(game.getCurrentEntry().platform(), game.getCurrentEntry().dataType(), game.getCurrentEntry().ref());
+        NextRoundMessage nextRoundMessage = new NextRoundMessage(mediaItem);
         for (GameUser value : game.getPlayers()) {
             value.getConnection().sendMessage(nextRoundMessage);
         }

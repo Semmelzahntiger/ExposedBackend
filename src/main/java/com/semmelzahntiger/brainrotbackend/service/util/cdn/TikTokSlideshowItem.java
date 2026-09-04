@@ -9,11 +9,9 @@ import java.util.List;
 public class TikTokSlideshowItem extends AbstractMediaItem {
     protected final List<String> imageUrls;
     protected final String audioUrl;
-    protected final String headerUrl;
-    public TikTokSlideshowItem(List<String> imageUrls, String audioUrl, String headerUrl) {
+    public TikTokSlideshowItem(List<String> imageUrls, String audioUrl) {
         super(SocialMediaPlatform.TIKTOK, MediaType.IMAGE, "tiktok_slide_show_media");
         this.imageUrls = imageUrls;
         this.audioUrl = audioUrl;
-        this.headerUrl = headerUrl;
     }
 }

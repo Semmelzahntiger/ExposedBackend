@@ -20,7 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 // Big Credits to yt-dlp for the internal mechanism
-@Service(Constants.INSTAGRAM)
+@Service("instagram_resolver")
 @Slf4j
 public class InstagramResolver implements CdnResolver {
 
@@ -74,10 +74,6 @@ public class InstagramResolver implements CdnResolver {
             }
 
             JsonNode media = extractHydratedMedia(page.content());
-            if (media.isMissingNode()) {
-                log.warn("Could not locate hydrated media node for {}", code);
-                return null;
-            }
             return collectFromNode(media);
 
         } catch (IOException e) {
