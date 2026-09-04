@@ -1,5 +1,6 @@
 package com.semmelzahntiger.brainrotbackend.service.data;
 
+import com.semmelzahntiger.brainrotbackend.util.Constants;
 import com.semmelzahntiger.brainrotbackend.util.DateUtil;
 import com.semmelzahntiger.brainrotbackend.util.JsonUtil;
 import com.semmelzahntiger.brainrotbackend.util.exceptions.MalformedDataStructureException;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Component("tiktok")
+@Component(Constants.TIKTOK)
 public class TikTokParser implements SocialMediaParser {
     public static final String TIKTOK_DATA = "user_data_tiktok.json";
 

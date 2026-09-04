@@ -24,7 +24,6 @@ public class DefaultMessageHandler implements SocketMessageHandler {
     public InboundNetworkMessage parseMessage(TextMessage textMessage) {
         try {
             String message = textMessage.getPayload();
-            log.info(message);
             return MapperUtil.MESSAGE_MAPPER.readValue(message, InboundNetworkMessage.class);
         } catch (JacksonException e) {
             log.error("Couldn't decode Network Message", e);

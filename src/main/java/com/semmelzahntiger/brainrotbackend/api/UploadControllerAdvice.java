@@ -1,12 +1,14 @@
 package com.semmelzahntiger.brainrotbackend.api;
 
 import com.semmelzahntiger.brainrotbackend.util.exceptions.MalformedDataStructureException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.tomcat.util.http.fileupload.impl.FileCountLimitExceededException;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
@@ -37,5 +39,9 @@ public class UploadControllerAdvice {
     @ExceptionHandler(FileCountLimitExceededException.class)
     public ResponseEntity<Object> handleFileCountLimitExceededException(FileCountLimitExceededException ex) {
         return ResponseEntity.status(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE).body(ex.getMessage());
+    }
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
+        return ResponseEntity.status(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE).body(e.getMessage());
     }
 }

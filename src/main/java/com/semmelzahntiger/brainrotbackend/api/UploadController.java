@@ -10,6 +10,7 @@ import com.semmelzahntiger.brainrotbackend.util.exceptions.MalformedDataStructur
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,7 +52,7 @@ public class UploadController {
         return success ? ResponseEntity.ok().build() : ResponseEntity.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).body(Map.of("error","Something went wrong during data processing"));
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<Map<String,String>> deleteUserData(@AuthenticationPrincipal UserPrincipal principal) {
         boolean success = entryService.deleteEntries(principal.userUuid());
         return success ? ResponseEntity.ok().body(Map.of("message","Data deleted.")) : ResponseEntity.badRequest().body(Map.of("message","Data for User doesn't exist or couldn't be deleted"));

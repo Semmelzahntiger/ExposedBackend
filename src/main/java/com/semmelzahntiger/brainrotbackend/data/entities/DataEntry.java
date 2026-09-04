@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,14 +27,15 @@ public class DataEntry {
         DataEntry entry = new DataEntry();
         entry.userEntity = userEntity;
         entry.dataType = resource.getResourceType().getName();
-        entry.platform = resource.getPlatform().toString();
+        entry.platform = resource.getPlatform().getName();
         entry.date = resource.getTimestamp();
         entry.value = resource.getResource();
         return entry;
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "data_entry_seq")
+    @SequenceGenerator(name = "data_entry_seq", sequenceName = "data_entry_seq", allocationSize = 100)
     @Column(name = "entry_id", nullable = false)
     private long id;
 

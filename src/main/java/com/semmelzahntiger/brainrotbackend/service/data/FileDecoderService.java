@@ -2,7 +2,9 @@ package com.semmelzahntiger.brainrotbackend.service.data;
 
 import org.apache.tomcat.util.http.fileupload.impl.FileCountLimitExceededException;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.unit.DataSize;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,12 +18,20 @@ import java.util.zip.ZipInputStream;
 @Component
 public class FileDecoderService {
 
-    private static final long MAX_ENTRY_MEGABYTES = 100L;
-    private static final long MAX_TOTAL_MEGABYTES = 200L;
-    private static final long MAX_ENTRY_SIZE = 100L * 1024 * 1024;
-    private static final long MAX_TOTAL_SIZE = MAX_TOTAL_MEGABYTES * 1024 * 1024;
-    private static final int MAX_ENTRIES = 300;
-    private static final int BUFFER_SIZE = 8192;
+
+    private final long maxEntryMegabytes;
+    private final long maxTotalMegabytes;
+    private final long maxEntrySize;
+    private final long maxTotalSize;
+    private final int MAX_ENTRIES = 300;
+    private final int BUFFER_SIZE = 8192;
+
+    public FileDecoderService(@Value("${spring.servlet.multipart.max-file-size}") String fileSize) {
+        this.maxTotalMegabytes = DataSize.parse(fileSize).toMegabytes();
+        this.maxTotalSize = maxTotalMegabytes * 1024 * 1024;
+        this.maxEntryMegabytes = maxTotalMegabytes;
+        this.maxEntrySize = maxTotalSize;
+    }
 
     /**
      * Decodes a zip file
@@ -66,11 +76,11 @@ public class FileDecoderService {
                     entryTotal += length;
                     totalUncompressedSize += length;
 
-                    if(entryTotal > MAX_ENTRY_SIZE) {
-                        throw new FileSizeLimitExceededException("Individual Zip Entry too large. (Max " + MAX_ENTRY_MEGABYTES + " MB)", entryTotal, MAX_ENTRY_SIZE);
+                    if(entryTotal > maxEntrySize) {
+                        throw new FileSizeLimitExceededException("Individual Zip Entry too large. (Max " + maxEntryMegabytes + " MB)", entryTotal, maxEntrySize);
                     }
-                    if(totalUncompressedSize > MAX_TOTAL_SIZE) {
-                        throw new FileSizeLimitExceededException("Zip file too large. (Max: " + MAX_TOTAL_MEGABYTES + " MB)", totalUncompressedSize, MAX_TOTAL_SIZE);
+                    if(totalUncompressedSize > maxTotalSize) {
+                        throw new FileSizeLimitExceededException("Zip file too large. (Max: " + maxTotalMegabytes + " MB)", totalUncompressedSize, maxTotalSize);
                     }
                     outputStream.write(buffer, 0, length);
                 }

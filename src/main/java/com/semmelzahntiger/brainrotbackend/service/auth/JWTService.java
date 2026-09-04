@@ -65,12 +65,11 @@ public class JWTService {
         if(decodedOptional.isPresent()) {
             DecodedJWT decoded = decodedOptional.get();
             UUID uuid = UUID.fromString(decoded.getSubject());
-            String email = String.valueOf(decoded.getClaim("email"));
-            String username = String.valueOf(decoded.getClaim("username"));
+            String email = decoded.getClaim("email").asString();
+            String username = decoded.getClaim("username").asString();
             List<String> authorities = List.of(decoded.getClaim("authorities").asArray(String.class));
-            return Optional.of(new AppUser(uuid, email, username, authorities));
+            return Optional.of(new AppUser(uuid, username, email, authorities));
         }
-        log.info("JWT INVALID");
         return Optional.empty();
     }
 

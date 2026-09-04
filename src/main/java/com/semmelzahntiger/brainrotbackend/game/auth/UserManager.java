@@ -5,6 +5,7 @@ import com.semmelzahntiger.brainrotbackend.game.UserConnection;
 import com.semmelzahntiger.brainrotbackend.service.auth.SocketAuthenticationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.Map;
@@ -69,7 +70,15 @@ public class UserManager {
 
         synchronized (authLock) {
             if (uuidSessionMap.containsKey(uuid)) {
-                return false;
+                String existingSession = uuidSessionMap.get(uuid);
+                GameUser existingUser = users.get(existingSession);
+                UUID existingUUID = sessionUUIDMap.get(existingSession);
+                existingUser.getConnection().close(CloseStatus.NORMAL);
+                uuidSessionMap.remove(existingUUID);
+
+                sessionUUIDMap.remove(existingSession);
+                uuidSessionMap.remove(existingUUID);
+                users.remove(existingSession);
             }
             uuidSessionMap.put(uuid, sessionId);
             sessionUUIDMap.put(sessionId, uuid);

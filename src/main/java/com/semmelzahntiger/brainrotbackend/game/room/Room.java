@@ -23,7 +23,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -41,9 +40,9 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 @Slf4j
 public class Room {
-    private static final int MIN_ROOM_SIZE = 2;
+    private static final int MIN_ROOM_SIZE = 1;
     private static final int MAX_ROOM_SIZE = 10;
-    private static final int MIN_PLAYERS_TO_START = 2;
+    private static final int MIN_PLAYERS_TO_START = 1;
     private static final int MIN_ROUNDS = 5;
     private static final int MAX_ROUNDS = 30;
     private static final int MIN_ROUND_TIME_SECONDS = 10;
@@ -212,6 +211,7 @@ public class Room {
                 return;
             }
             if(enabledResources == null || !VALID_RESOURCES.containsAll(enabledResources)) {
+                log.warn("Passed these Resources: {}", enabledResources);
                 requester.getConnection().sendMessage(new DenyChangeRoomMessage("One or more selected resource types are unknown."));
                 return;
             }
@@ -235,6 +235,7 @@ public class Room {
             if(newHost == null) {
                 log.warn("Host tried to assign admin to a user that's not in the room.");
                 return;
+
             }
             host = newHost;
             broadcastRoomUpdate();
@@ -269,7 +270,7 @@ public class Room {
                     getSettings().getEnabledPlatforms(),
                     getSettings().getBeforeDate(),
                     getSettings().getRounds()
-            ).stream().map(entry -> new GameData.UserEntry(players.get(entry.getUser_id()), entry.getDataType(), entry.getValue())).toList();
+            ).stream().map(entry -> new GameData.UserEntry(players.get(entry.getUser_id()), entry.getPlatform(),entry.getDataType(), entry.getValue())).toList();
             if(entries.isEmpty()) {
                 log.info("Game start aborted in room '{}': no data entries matched the current settings.", roomCode);
                 host.getConnection().sendMessage(new DenyStartGame("No content could be found for the current settings. Adjust the platforms, resources, or date and try again."));
@@ -280,6 +281,7 @@ public class Room {
             runGameLoop();
         });
     }
+    // Starts the Game Loop
     protected void runGameLoop() {
         List<StartedGameMessage.Participant> participants = game.getPlayers().stream()
                 .map(player -> new StartedGameMessage.Participant(player.getUserUUID(), player.getUsername()))
@@ -290,6 +292,8 @@ public class Room {
         }
         advanceToNextRound();
     }
+
+    // Initiates a Game Round. Initiates the timeout
     protected void advanceToNextRound() {
         if(!gameStarted || game == null) {
             return;
@@ -306,6 +310,7 @@ public class Room {
         roundTimeout = ThreadUtil.scheduleTask(() -> submitTask(() -> completeRound(token)),
                 getSettings().getRoundTimeInSeconds(), TimeUnit.SECONDS);
     }
+    // Completes Round. If somehow triggered by lingering timeout, return immediately. Cancels old timeouts. Initiates next round
     protected void completeRound(int token) {
         if(token != activeRoundToken) {
             return;
@@ -352,7 +357,10 @@ public class Room {
         }
     }
     protected void broadcastNextRound() {
-        NextRoundMessage nextRoundMessage = new NextRoundMessage(game.getCurrentEntry().dataType(), game.getCurrentEntry().ref());
+        if(game == null || game.getCurrentEntry() == null) {
+            log.error("BroadcastNextRound Message occurred outside of intended game cycle.");
+        }
+        NextRoundMessage nextRoundMessage = new NextRoundMessage(game.getCurrentEntry().platform(), game.getCurrentEntry().dataType(), game.getCurrentEntry().ref());
         for (GameUser value : game.getPlayers()) {
             value.getConnection().sendMessage(nextRoundMessage);
         }

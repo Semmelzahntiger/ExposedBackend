@@ -131,7 +131,7 @@ public class GameData {
         return playersScore.entrySet().stream().map(userScore -> new UserScore(userScore.getKey().getUserUUID(), userScore.getValue())).toList();
     }
 
-    public record UserEntry(GameUser user, String dataType, String ref) {}
+    public record UserEntry(GameUser user,String platform, String dataType, String ref) {}
     public record UserScore(UUID user, int score) {}
 
     public enum GuessSubmissionResult {

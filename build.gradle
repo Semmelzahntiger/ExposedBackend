@@ -44,6 +44,10 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testAnnotationProcessor 'org.projectlombok:lombok'
+    // Source: https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+    implementation("com.squareup.okhttp3:okhttp:5.5.0")
+    // Source: https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp-java-net-cookiejar
+    implementation("com.squareup.okhttp3:okhttp-java-net-cookiejar:5.5.0")
 }
 
 tasks.named('test') {

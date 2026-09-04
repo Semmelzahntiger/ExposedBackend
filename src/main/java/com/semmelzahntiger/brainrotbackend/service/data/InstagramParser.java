@@ -1,5 +1,6 @@
 package com.semmelzahntiger.brainrotbackend.service.data;
 
+import com.semmelzahntiger.brainrotbackend.util.Constants;
 import com.semmelzahntiger.brainrotbackend.util.JsonUtil;
 import com.semmelzahntiger.brainrotbackend.util.MiscUtil;
 import com.semmelzahntiger.brainrotbackend.util.exceptions.MalformedDataStructureException;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Component("instagram")
+@Component(Constants.INSTAGRAM)
 public class InstagramParser implements SocialMediaParser {
     public static final String LIKED_POST_PATH = "your_instagram_activity/likes/liked_posts.json";
     public static final String SAVED_POST_PATH = "your_instagram_activity/saved/saved_posts.json";

@@ -8,6 +8,7 @@ import com.semmelzahntiger.brainrotbackend.util.RandomUtil;
 import com.semmelzahntiger.brainrotbackend.util.exceptions.MalformedDataStructureException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.unit.DataSize;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +18,7 @@ import java.util.Map;
 public class FileParserTest {
 
     public static FileDecoderService getFileDecoderService() {
-        return new FileDecoderService();
+        return new FileDecoderService(DataSize.ofMegabytes(200).toString());
     }
     public static InstagramParser getInstagramParser() {
         return new InstagramParser();
