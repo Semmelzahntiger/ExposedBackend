@@ -5,10 +5,12 @@ import com.semmelzahntiger.brainrotbackend.game.RoomSettings;
 import com.semmelzahntiger.brainrotbackend.game.auth.GameUser;
 import com.semmelzahntiger.brainrotbackend.service.data.SocialMediaPlatform;
 import com.semmelzahntiger.brainrotbackend.service.data.SocialMediaResource;
+import com.semmelzahntiger.brainrotbackend.service.stream.TikTokStreamingService;
 import com.semmelzahntiger.brainrotbackend.service.util.ResolverService;
 import com.semmelzahntiger.brainrotbackend.service.util.cdn.AbstractMediaItem;
 import com.semmelzahntiger.brainrotbackend.service.util.cdn.MissingMediaItem;
 import com.semmelzahntiger.brainrotbackend.service.util.cdn.StringMediaItem;
+import com.semmelzahntiger.brainrotbackend.service.util.cdn.TikTokVideoItem;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.ConfirmChangeRoomSettings;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.ConfirmSubmissionMessage;
 import com.semmelzahntiger.brainrotbackend.socket.protocol.outgoing.DenyChangeRoomMessage;
@@ -70,6 +72,7 @@ public class Room {
     protected final Consumer<String> onCloseCallback;
     private final DataEntryRepository dataEntryRepository;
     private final ResolverService resolverService;
+    private final TikTokStreamingService tikTokStreamingService;
     @Getter
     protected volatile boolean gameStarted = false;
     @Getter
@@ -81,11 +84,12 @@ public class Room {
 
 
 
-    public Room(GameUser host, Consumer<String> onCloseCallback, DataEntryRepository dataEntryRepository, ResolverService resolverService) {
+    public Room(GameUser host, Consumer<String> onCloseCallback, DataEntryRepository dataEntryRepository, ResolverService resolverService, TikTokStreamingService tikTokStreamingService) {
         this.host = host;
         this.onCloseCallback = onCloseCallback;
         this.dataEntryRepository = dataEntryRepository;
         this.resolverService = resolverService;
+        this.tikTokStreamingService = tikTokStreamingService;
         runRoomLoop();
         joinRoom(host);
     }
@@ -309,6 +313,15 @@ public class Room {
         }
         GameData.UserEntry userEntry = game.getCurrentEntry();
         AbstractMediaItem abstractMediaItem = resolveAbstractMediaItem(userEntry);
+
+        // Clients can't access TikTok's themselves due to TikTok's heavy restrictions on videos. They store it on their actual domain and not on the tiktokcdn. Only Slideshows and their respective audios reside in the cdn.
+        // Likely due to TLS fingerprint checking on their Akamai Server. React Native's <Video> Tag offloads the GET call to the native video player which I don't know how to properly modify
+        // Tested the GET call on Android's Termux terminal. Returns 200. Only the React Native call returns 403.
+        // This is why the Backend will act as a proxy to access the video since it works with the OkHttp client.
+        if(abstractMediaItem instanceof TikTokVideoItem videoItem) {
+            initStreamData(videoItem);
+        }
+
         if(abstractMediaItem == null) {
             abstractMediaItem = new MissingMediaItem(SocialMediaPlatform.getByPlatformName(userEntry.platform()));
         }
@@ -319,6 +332,10 @@ public class Room {
         broadcastNextRound(abstractMediaItem);
         roundTimeout = ThreadUtil.scheduleTask(() -> submitTask(() -> completeRound(token)),
                 getSettings().getRoundTimeInSeconds(), TimeUnit.SECONDS);
+    }
+    private void initStreamData(TikTokVideoItem videoItem) {
+        videoItem.setRoomId(roomCode);
+        tikTokStreamingService.addStreamData(roomCode, videoItem.getPostId(), videoItem.getCdnUrl(),videoItem.getTtChainToken());
     }
     private AbstractMediaItem resolveAbstractMediaItem(GameData.UserEntry currentEntry) {
         return switch (currentEntry.dataType()) {

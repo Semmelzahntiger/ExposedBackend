@@ -183,7 +183,7 @@ public class TikTokResolver implements CdnResolver {
             }
 
             String videoUrl = extractBestWebFormat(itemStruct);
-            return new TikTokVideoItem(videoUrl, "https://www.tiktok.com/", result.cookie());
+            return new TikTokVideoItem(videoId, videoUrl, result.cookie());
         }
     }
     /**

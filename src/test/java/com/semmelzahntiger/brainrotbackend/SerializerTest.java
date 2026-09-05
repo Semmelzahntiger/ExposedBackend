@@ -3,6 +3,7 @@ package com.semmelzahntiger.brainrotbackend;
 import com.semmelzahntiger.brainrotbackend.service.util.InstagramResolver;
 import com.semmelzahntiger.brainrotbackend.service.util.TikTokResolver;
 import com.semmelzahntiger.brainrotbackend.service.util.cdn.AbstractMediaItem;
+import com.semmelzahntiger.brainrotbackend.service.util.cdn.TikTokVideoItem;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,17 +38,12 @@ public class SerializerTest {
         Assertions.assertNotNull(item);
         printJsonOutput(item);
     }
-    public static void printJsonOutput(AbstractMediaItem mediaItem) {
-        log.info("------- BASE INFORMATION -------");
-        log.info("CLASS: {}", mediaItem.getClass().getSimpleName());
-        String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mediaItem);
-        log.info("------- JSON OUTPUT -------");
-        log.info(json);
-        log.info("------- END OF JSON OUTPUT -------");
-    }
+
     @Test
     public void testTikTokVideoSerialization() throws Exception {
         AbstractMediaItem item = tikTokResolver.getCdnContents("https://www.tiktok.com/@hoodinformatik/video/7680888932157967638");
+        TikTokVideoItem videoItem = ((TikTokVideoItem) item);
+        videoItem.setRoomId("XXXXXX");
         Assertions.assertNotNull(item);
         printJsonOutput(item);
     }
@@ -56,5 +52,13 @@ public class SerializerTest {
         AbstractMediaItem item = tikTokResolver.getCdnContents("https://www.tiktok.com/@dragonverse.89/photo/7681241395478203680");
         Assertions.assertNotNull(item);
         printJsonOutput(item);
+    }
+    public static void printJsonOutput(AbstractMediaItem mediaItem) {
+        log.info("------- BASE INFORMATION -------");
+        log.info("CLASS: {}", mediaItem.getClass().getSimpleName());
+        String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mediaItem);
+        log.info("------- JSON OUTPUT -------");
+        log.info(json);
+        log.info("------- END OF JSON OUTPUT -------");
     }
 }
